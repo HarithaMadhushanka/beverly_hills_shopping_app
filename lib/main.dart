@@ -1,18 +1,28 @@
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
+import 'package:beverly_hills_shopping_app/enums.dart';
 import 'package:beverly_hills_shopping_app/screens/welcome.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  DBHelper().checkAuthState();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: 'SF',
+        primaryColor: PrimaryColorDark,
       ),
       home: WelcomeScreen(),
     );

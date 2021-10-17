@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "206012978695",
+    "project_id": "beverly-hills-shopping-app",
+    "storage_bucket": "beverly-hills-shopping-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206012978695:android:9f797fcbae1ad2a1f1bca2",
+        "android_client_info": {
+          "package_name": "com.example.beverly_hills_shopping_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206012978695-grglna79jaspu07a1s553e18ktm8ahl4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqyLbiL4SMu3kUmvQ-oDtOuIDxqBTRTLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206012978695-grglna79jaspu07a1s553e18ktm8ahl4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
