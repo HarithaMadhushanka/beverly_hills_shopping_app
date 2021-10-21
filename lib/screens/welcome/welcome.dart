@@ -1,11 +1,11 @@
 import 'package:beverly_hills_shopping_app/components/custom_outline_button.dart';
 import 'package:beverly_hills_shopping_app/components/custom_solid_button.dart';
-import 'package:beverly_hills_shopping_app/enums.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_login_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_login_screen.dart';
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 
-import 'outlet/outlet_login_screen.dart';
+import '../outlet/outlet_login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key key}) : super(key: key);

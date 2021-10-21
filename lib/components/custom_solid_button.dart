@@ -1,6 +1,5 @@
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
-
-import '../enums.dart';
 
 class CustomSolidButton extends StatelessWidget {
   const CustomSolidButton({

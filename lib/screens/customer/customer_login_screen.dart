@@ -1,13 +1,14 @@
-import 'package:beverly_hills_shopping_app/common_functions.dart' as common;
 import 'package:beverly_hills_shopping_app/components/custom_solid_button.dart';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
+import 'package:beverly_hills_shopping_app/screens/customer/customer_dashboard.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_registration_screen.dart';
-import 'package:beverly_hills_shopping_app/screens/customer/intro.dart';
+import 'package:beverly_hills_shopping_app/screens/welcome/intro.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../../enums.dart';
 
 class CustomerLoginScreen extends StatefulWidget {
   const CustomerLoginScreen({Key key}) : super(key: key);
@@ -21,6 +22,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
   TextEditingController customerLoginEmailController = TextEditingController();
   TextEditingController customerLoginPasswordController =
       TextEditingController();
+  DBHelper _dbHelper = DBHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +202,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                 ]),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
+            padding: const EdgeInsets.fromLTRB(25, 10, 25, 15),
             child: CustomSolidButton(
               width: width,
               height: 60,
@@ -215,6 +217,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
     );
   }
 
+  /// Validates empty fields
   void _confirmAndLoginCustomer() {
     customerLoginEmailController.text.isNotEmpty &&
             customerLoginPasswordController.text.isNotEmpty
@@ -222,15 +225,33 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
         : common.showToast(context, "Please fill all the fields");
   }
 
+  /// Logs in the user (Firebase Auth)
   void _loginCustomer() async {
-    UserCredential userCredential = await DBHelper().loginUser(
+    UserCredential userCredential = await _dbHelper.loginUser(
         customerLoginEmailController.text,
         customerLoginPasswordController.text,
         context);
-
+    common.saveUpdatedUserDetailsLocally(userType: "customer");
     if (userCredential != null) {
-      Route route = MaterialPageRoute(builder: (c) => IntroScreen());
-      Navigator.pushReplacement(context, route);
+      /// Checks if the user has completed the Registration process
+      bool isRegCompleted =
+          await _dbHelper.getUserRegState(userCredential.user.uid, "customer");
+
+      if (isRegCompleted == null) {
+        common.showToast(
+            context, "User credentials are incorrect. Please try again.");
+      } else {
+        /// Navigates the user to the next page according to their Registration State
+        Route route = MaterialPageRoute(
+          builder: (c) => !isRegCompleted
+              ? IntroScreen(
+                  userID: userCredential.user.uid,
+                  userType: "customer",
+                )
+              : CustomerDashboard(),
+        );
+        Navigator.pushReplacement(context, route);
+      }
     } else {
       common.showToast(context, "Please try again");
     }

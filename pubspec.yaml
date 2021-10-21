@@ -15,8 +15,12 @@ dependencies:
   firebase_core: ^1.7.0
   firebase_auth: ^3.1.3
   cloud_firestore: ^2.5.3
+  firebase_storage: ^10.0.5
   introduction_screen: ^2.1.0
-  image_picker: ^0.8.4+1
+  image_picker: ^0.7.3
+  shared_preferences: ^2.0.6
+  font_awesome_flutter: ^9.1.0
+  image_cropper: ^1.4.1
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +35,7 @@ flutter:
     - images/welcome_bg_new.png
     - images/back_arrow.png
     - images/user.png
+    - images/shopping.png
 
   fonts:
     - family: SF

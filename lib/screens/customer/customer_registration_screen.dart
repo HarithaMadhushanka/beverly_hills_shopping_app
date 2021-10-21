@@ -1,12 +1,12 @@
-import 'package:beverly_hills_shopping_app/common_functions.dart' as common;
 import 'package:beverly_hills_shopping_app/components/custom_solid_button.dart';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_login_screen.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../../enums.dart';
 
 class CustomerRegistrationScreen extends StatefulWidget {
   const CustomerRegistrationScreen({Key key}) : super(key: key);
@@ -23,6 +23,7 @@ class _CustomerRegistrationScreenState
       TextEditingController();
   TextEditingController customerRegistrationPasswordController =
       TextEditingController();
+  DBHelper _dbHelper = DBHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class _CustomerRegistrationScreenState
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +198,7 @@ class _CustomerRegistrationScreenState
                 ]),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
+            padding: const EdgeInsets.fromLTRB(25, 10, 25, 15),
             child: CustomSolidButton(
                 width: width,
                 height: 60,
@@ -211,6 +212,7 @@ class _CustomerRegistrationScreenState
     );
   }
 
+  /// Validates empty fields
   void _confirmAndSubmit() {
     customerRegistrationEmailController.text.isNotEmpty &&
             customerRegistrationPasswordController.text.isNotEmpty
@@ -218,8 +220,9 @@ class _CustomerRegistrationScreenState
         : common.showToast(context, "Please fill all the fields");
   }
 
+  /// Registers the User (Firebase Auth)
   void _updateDatabase() async {
-    UserCredential userCredential = await DBHelper().registerUser(
+    UserCredential userCredential = await _dbHelper.registerUser(
       customerRegistrationEmailController.text,
       customerRegistrationPasswordController.text,
       context,
@@ -227,7 +230,8 @@ class _CustomerRegistrationScreenState
     print(userCredential);
 
     if (userCredential != null) {
-      DBHelper()
+      /// Saves Customer details in Firestore & Navigates the User to the Login page
+      _dbHelper
           .saveUserInfoToFireStore(userCredential.user, "customers")
           .then((value) {
         Navigator.pop(context);

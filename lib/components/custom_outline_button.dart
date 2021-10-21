@@ -1,6 +1,5 @@
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
-
-import '../enums.dart';
 
 class CustomOutlineButton extends StatelessWidget {
   const CustomOutlineButton({
@@ -10,12 +9,18 @@ class CustomOutlineButton extends StatelessWidget {
     @required this.text,
     @required this.onTap,
     this.buttonTextSize,
+    this.fontColor,
+    this.borderColor,
+    this.borderWidth,
   }) : super(key: key);
   final double width;
   final double height;
   final String text;
   final VoidCallback onTap;
   final double buttonTextSize;
+  final Color fontColor;
+  final Color borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,9 @@ class CustomOutlineButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: PrimaryColorDark),
+            border: Border.all(
+                color: borderColor != null ? borderColor : PrimaryColorDark,
+                width: borderWidth != null ? borderWidth : 1),
           ),
           child: Center(
             child: Text(
@@ -40,7 +47,7 @@ class CustomOutlineButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: buttonTextSize != null ? buttonTextSize : 18,
                 fontWeight: FontWeight.bold,
-                color: PrimaryColorDark,
+                color: fontColor != null ? fontColor : PrimaryColorDark,
               ),
             ),
           ),

@@ -1,9 +1,10 @@
-import 'package:beverly_hills_shopping_app/common_functions.dart' as common;
 import 'package:beverly_hills_shopping_app/components/custom_solid_button.dart';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 
-import '../../enums.dart';
 import 'admin_home_screen.dart';
 
 class AdminLoginScreen extends StatefulWidget {

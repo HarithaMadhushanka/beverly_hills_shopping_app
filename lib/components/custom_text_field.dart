@@ -1,6 +1,5 @@
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
-
-import '../enums.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
@@ -11,6 +10,7 @@ class CustomTextField extends StatefulWidget {
     @required this.hintText,
     @required this.icon,
     this.iconSize,
+    @required this.textInputType,
   }) : super(key: key);
   final TextEditingController controller;
   final double height;
@@ -18,6 +18,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final IconData icon;
   final double iconSize;
+  final TextInputType textInputType;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -35,7 +36,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
       child: TextFormField(
         controller: widget.controller,
-        keyboardType: TextInputType.emailAddress,
+        keyboardType: widget.textInputType,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(top: 10),
           hintText: widget.hintText,

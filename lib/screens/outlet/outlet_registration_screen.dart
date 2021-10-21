@@ -1,12 +1,12 @@
-import 'package:beverly_hills_shopping_app/common_functions.dart' as common;
 import 'package:beverly_hills_shopping_app/components/custom_solid_button.dart';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_login_screen.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
+import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../../enums.dart';
 
 class OutletRegistrationScreen extends StatefulWidget {
   const OutletRegistrationScreen({Key key}) : super(key: key);
@@ -22,6 +22,7 @@ class _OutletRegistrationScreenState extends State<OutletRegistrationScreen> {
       TextEditingController();
   TextEditingController outletRegistrationPasswordController =
       TextEditingController();
+  DBHelper _dbHelper = DBHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class _OutletRegistrationScreenState extends State<OutletRegistrationScreen> {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,7 +195,7 @@ class _OutletRegistrationScreenState extends State<OutletRegistrationScreen> {
                 ]),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
+            padding: const EdgeInsets.fromLTRB(25, 10, 25, 15),
             child: CustomSolidButton(
               width: width,
               height: 60,
@@ -209,6 +210,7 @@ class _OutletRegistrationScreenState extends State<OutletRegistrationScreen> {
     );
   }
 
+  /// Validates empty fields
   void _confirmAndSubmit() {
     outletRegistrationEmailController.text.isNotEmpty &&
             outletRegistrationPasswordController.text.isNotEmpty
@@ -216,8 +218,9 @@ class _OutletRegistrationScreenState extends State<OutletRegistrationScreen> {
         : common.showToast(context, "Please fill all the fields");
   }
 
+  /// Registers the User (Firebase Auth)
   void _updateDatabase() async {
-    UserCredential userCredential = await DBHelper().registerUser(
+    UserCredential userCredential = await _dbHelper.registerUser(
       outletRegistrationEmailController.text,
       outletRegistrationPasswordController.text,
       context,
@@ -225,7 +228,8 @@ class _OutletRegistrationScreenState extends State<OutletRegistrationScreen> {
     print(userCredential);
 
     if (userCredential != null) {
-      DBHelper()
+      /// Saves Outlet details in Firestore & Navigates the User to the Login page
+      _dbHelper
           .saveUserInfoToFireStore(userCredential.user, "outlets")
           .then((value) {
         Navigator.pop(context);
