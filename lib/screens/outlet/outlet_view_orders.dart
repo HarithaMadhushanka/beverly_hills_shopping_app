@@ -2,15 +2,14 @@ import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_comm
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 
-class CustomerNavigationScreen extends StatefulWidget {
-  const CustomerNavigationScreen({Key key}) : super(key: key);
+class OutletViewOrdersScreen extends StatefulWidget {
+  const OutletViewOrdersScreen({Key key}) : super(key: key);
 
   @override
-  _CustomerNavigationScreenState createState() =>
-      _CustomerNavigationScreenState();
+  _OutletViewOrdersScreenState createState() => _OutletViewOrdersScreenState();
 }
 
-class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
+class _OutletViewOrdersScreenState extends State<OutletViewOrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +21,7 @@ class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
           buildCustomSliverAppBarCommon(
             context: context,
             isBackNeeded: true,
-            title: 'Navigation',
+            title: 'View Orders',
             isTrailingNeeded: false,
           ),
           SliverFillRemaining(

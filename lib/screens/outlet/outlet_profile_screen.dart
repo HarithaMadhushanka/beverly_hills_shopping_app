@@ -94,42 +94,24 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
                                   borderRadius: BorderRadius.circular(150),
                                   border: Border.all(
                                       color: PrimaryColorLight, width: 1.5)),
-                              child: _pickedImageFilePath != ""
+                              child: _pickedImageFilePath != "" &&
+                                      loggedInUserID != ""
                                   ? Image.file(
                                       File(_pickedImageFilePath),
                                       height: 120,
                                       width: 120,
                                       fit: BoxFit.cover,
                                     )
-                                  : StreamBuilder(
-                                      stream: outletCollectionReference
-                                          .doc(loggedInUserID)
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        var userDocument = snapshot.data;
-                                        if (!snapshot.hasData) {
-                                          return ClipOval(
-                                            child: Image.asset(
-                                              'images/user.png',
-                                              height: 120,
-                                              width: 120,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        }
-                                        return userDocument["profilePicUrl"] !=
-                                                    "" &&
-                                                userDocument["profilePicUrl"] !=
-                                                    null
-                                            ? ClipOval(
-                                                child: Image.network(
-                                                  userDocument["profilePicUrl"],
-                                                  height: 120,
-                                                  width: 120,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              )
-                                            : ClipOval(
+                                  : _pickedImageFilePath == "" &&
+                                          loggedInUserID != ""
+                                      ? StreamBuilder(
+                                          stream: outletCollectionReference
+                                              .doc(loggedInUserID)
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            var userDocument = snapshot.data;
+                                            if (!snapshot.hasData) {
+                                              return ClipOval(
                                                 child: Image.asset(
                                                   'images/user.png',
                                                   height: 120,
@@ -137,7 +119,32 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
                                                   fit: BoxFit.cover,
                                                 ),
                                               );
-                                      }),
+                                            }
+                                            return userDocument[
+                                                            "profilePicUrl"] !=
+                                                        "" &&
+                                                    userDocument[
+                                                            "profilePicUrl"] !=
+                                                        null
+                                                ? ClipOval(
+                                                    child: Image.network(
+                                                      userDocument[
+                                                          "profilePicUrl"],
+                                                      height: 120,
+                                                      width: 120,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : ClipOval(
+                                                    child: Image.asset(
+                                                      'images/user.png',
+                                                      height: 120,
+                                                      width: 120,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  );
+                                          })
+                                      : Container(),
                             ),
                           ),
                           Positioned(
@@ -256,6 +263,7 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
 
   Future<void> _signOut() async {
     isCustomerLoggedIn = false;
+    loggedInUserID = "";
     await FirebaseAuth.instance.signOut().then((value) {
       Route route = MaterialPageRoute(
         builder: (c) => WelcomeScreen(),

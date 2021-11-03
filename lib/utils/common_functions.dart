@@ -31,7 +31,7 @@ Future<void> saveUpdatedUserDetailsLocally({@required String userType}) async {
   await userType == "customer"
       ? customerCollectionReference.get().then((QuerySnapshot querySnapshot) {
           querySnapshot.docs.forEach((doc) {
-            if (loggedInUserID == doc["userID"]) {
+            if (loggedInUserID == (doc.data() as dynamic)["userID"]) {
               customerObj.profilePicUrl = doc["profilePicUrl"];
               customerObj.firstName = doc["firstName"];
               customerObj.lastName = doc["lastName"];
@@ -48,10 +48,11 @@ Future<void> saveUpdatedUserDetailsLocally({@required String userType}) async {
         })
       : outletCollectionReference.get().then((QuerySnapshot querySnapshot) {
           querySnapshot.docs.forEach((doc) {
-            if (loggedInUserID == doc["userID"]) {
+            if (loggedInUserID == (doc.data() as dynamic)['userID']) {
               outletObj.profilePicUrl = doc["profilePicUrl"];
               outletObj.outletName = doc["outletName"];
               outletObj.mobileNo = doc["mobileNo"];
+              outletObj.category = doc["category"];
               outletObj.email = doc["email"];
               outletObj.addressLine1 = doc["addressLine1"];
               outletObj.addressLine2 = doc["addressLine2"];
@@ -131,4 +132,18 @@ Future<File> cropImage({@required File imageFile}) async {
   }
 
   return imageFile;
+}
+
+Future<String> selectDate(BuildContext context, String dateType) async {
+  String date = "";
+
+  final DateTime picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime(2023),
+  );
+  if (picked != null) date = picked.toLocal().toString().split(' ')[0];
+
+  return date;
 }

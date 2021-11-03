@@ -1,21 +1,21 @@
 import 'package:beverly_hills_shopping_app/components/custom_promotion_component.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_common.dart';
+import 'package:beverly_hills_shopping_app/screens/admin/admin_pending_promotions_details_screen.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'customer_view_promotion_details_screen.dart';
-
-class CustomerViewPromotionsScreen extends StatefulWidget {
-  const CustomerViewPromotionsScreen({Key key}) : super(key: key);
+class AdminPendingPromotionsScreen extends StatefulWidget {
+  const AdminPendingPromotionsScreen({Key key}) : super(key: key);
 
   @override
-  _CustomerViewPromotionsScreenState createState() =>
-      _CustomerViewPromotionsScreenState();
+  _AdminPendingPromotionsScreenState createState() =>
+      _AdminPendingPromotionsScreenState();
 }
 
-class _CustomerViewPromotionsScreenState
-    extends State<CustomerViewPromotionsScreen> {
+class _AdminPendingPromotionsScreenState
+    extends State<AdminPendingPromotionsScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -30,7 +30,7 @@ class _CustomerViewPromotionsScreenState
           buildCustomSliverAppBarCommon(
             context: context,
             isBackNeeded: true,
-            title: 'Promotions',
+            title: 'Pending Promotions',
             isTrailingNeeded: false,
           ),
           SliverFillRemaining(
@@ -45,7 +45,7 @@ class _CustomerViewPromotionsScreenState
                     ),
                     StreamBuilder<QuerySnapshot>(
                         stream: promotionsCollectionReference
-                            .where('isApproved', isEqualTo: true)
+                            .where('isApproved', isEqualTo: false)
                             .orderBy('promoAddedTime', descending: true)
                             .snapshots(),
                         builder: (BuildContext context,
@@ -68,7 +68,7 @@ class _CustomerViewPromotionsScreenState
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                CustomerViewPromotionDetailsScreen(
+                                                AdminPendingPromotionsDetailsScreen(
                                               promotion: promotion,
                                             ),
                                           ),

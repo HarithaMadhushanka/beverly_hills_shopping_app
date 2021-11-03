@@ -30,3 +30,17 @@ CollectionReference customerCollectionReference =
     FirebaseFirestore.instance.collection('customers');
 CollectionReference outletCollectionReference =
     FirebaseFirestore.instance.collection('outlets');
+CollectionReference promotionsCollectionReference =
+    FirebaseFirestore.instance.collection('promotions');
+
+List<String> outletCategories = [
+  'Shoes',
+  'Clothing',
+  'Jewelery',
+  'Watches',
+  'Electronics',
+  'Food & Beverages',
+  'Cosmetics',
+  'Furniture',
+  'Sportswear & Gear',
+];

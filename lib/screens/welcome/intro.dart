@@ -57,6 +57,8 @@ class _IntroScreenState extends State<IntroScreen> {
   String _pickedImageFilePath = "";
   DBHelper _dbHelper = DBHelper();
 
+  String _selectedCategory;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -276,6 +278,49 @@ class _IntroScreenState extends State<IntroScreen> {
                             iconSize: 22,
                             textInputType: TextInputType.text,
                           ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            width: width,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: PrimaryColorDark),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(top: 10),
+                                hintText: 'Please select a category',
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                icon: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
+                                  child: Icon(
+                                    Icons.list,
+                                    size: 22,
+                                    color: SecondaryColorDark,
+                                  ),
+                                ),
+                              ),
+                              value: _selectedCategory,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedCategory = newValue;
+                                });
+                              },
+                              items: outletCategories.map((category) {
+                                return DropdownMenuItem(
+                                  child: new Text(category),
+                                  value: category,
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ],
                       ),
                       decoration: pageDecoration,
@@ -418,6 +463,7 @@ class _IntroScreenState extends State<IntroScreen> {
           address1OutletController.text.isNotEmpty &&
           address2OutletController.text.isNotEmpty &&
           address3OutletController.text.isNotEmpty &&
+          _selectedCategory != null &&
           _imageFile != null) {
         updateUserDetails();
       } else if (nameOutletController.text.isNotEmpty &&
@@ -425,6 +471,7 @@ class _IntroScreenState extends State<IntroScreen> {
           address1OutletController.text.isNotEmpty &&
           address2OutletController.text.isNotEmpty &&
           address3OutletController.text.isNotEmpty &&
+          _selectedCategory != null &&
           _imageFile == null) {
         introKey.currentState?.animateScroll(0);
         common.showToast(context, "Please upload a profile picture");
@@ -432,7 +479,8 @@ class _IntroScreenState extends State<IntroScreen> {
           mobileNoOutletController.text.isEmpty ||
           address1OutletController.text.isEmpty ||
           address2OutletController.text.isEmpty ||
-          address3OutletController.text.isEmpty && _imageFile != null) {
+          address3OutletController.text.isEmpty ||
+          _selectedCategory != null && _imageFile != null) {
         introKey.currentState?.animateScroll(1);
         common.showToast(context, "Please fill all the fields");
       } else {
@@ -465,6 +513,7 @@ class _IntroScreenState extends State<IntroScreen> {
       Outlet outlet = Outlet();
       outlet.outletName = nameOutletController.text;
       outlet.mobileNo = mobileNoOutletController.text;
+      outlet.category = _selectedCategory;
       outlet.addressLine1 = address1OutletController.text;
       outlet.addressLine2 = address2OutletController.text;
       outlet.addressLine3 = address3OutletController.text;

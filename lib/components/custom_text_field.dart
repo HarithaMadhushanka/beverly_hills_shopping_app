@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
     @required this.hintText,
     @required this.icon,
     this.iconSize,
+    this.enabled,
     @required this.textInputType,
   }) : super(key: key);
   final TextEditingController controller;
@@ -18,6 +19,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final IconData icon;
   final double iconSize;
+  final bool enabled;
   final TextInputType textInputType;
 
   @override
@@ -35,6 +37,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextFormField(
+        enabled: widget.enabled == null ? true : widget.enabled,
         controller: widget.controller,
         keyboardType: widget.textInputType,
         decoration: InputDecoration(

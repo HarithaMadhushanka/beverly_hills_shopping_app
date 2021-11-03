@@ -8,9 +8,11 @@ class CustomSolidButton extends StatelessWidget {
     @required this.height,
     @required this.text,
     @required this.onTap,
+    this.buttonTextSize,
   }) : super(key: key);
   final double width;
   final double height;
+  final double buttonTextSize;
   final String text;
   final VoidCallback onTap;
 
@@ -35,7 +37,7 @@ class CustomSolidButton extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: buttonTextSize != null ? buttonTextSize : 18,
                 fontWeight: FontWeight.bold,
                 color: PrimaryColorLight,
               ),

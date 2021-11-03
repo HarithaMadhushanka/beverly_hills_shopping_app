@@ -39,7 +39,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
     super.initState();
     common.saveUpdatedUserDetailsLocally(userType: "customer").whenComplete(
         () => common.getUserDetails(isCustomer: true).then((value) {
-              _customerFirstNameController.text = value;
+              _customerFirstNameController.text = value.firstName;
               _customerLastNameController.text = value.lastName;
               _customerMobileNoController.text = value.mobileNo;
               _customerAddress1Controller.text = value.addressLine1;
@@ -96,42 +96,24 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                   borderRadius: BorderRadius.circular(150),
                                   border: Border.all(
                                       color: PrimaryColorLight, width: 1.5)),
-                              child: _pickedImageFilePath != ""
+                              child: _pickedImageFilePath != "" &&
+                                      loggedInUserID != ""
                                   ? Image.file(
                                       File(_pickedImageFilePath),
                                       height: 120,
                                       width: 120,
                                       fit: BoxFit.cover,
                                     )
-                                  : StreamBuilder(
-                                      stream: customerCollectionReference
-                                          .doc(loggedInUserID)
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        var userDocument = snapshot.data;
-                                        if (!snapshot.hasData) {
-                                          return ClipOval(
-                                            child: Image.asset(
-                                              'images/user.png',
-                                              height: 120,
-                                              width: 120,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        }
-                                        return userDocument["profilePicUrl"] !=
-                                                    "" &&
-                                                userDocument["profilePicUrl"] !=
-                                                    null
-                                            ? ClipOval(
-                                                child: Image.network(
-                                                  userDocument["profilePicUrl"],
-                                                  height: 120,
-                                                  width: 120,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              )
-                                            : ClipOval(
+                                  : _pickedImageFilePath == "" &&
+                                          loggedInUserID != ""
+                                      ? StreamBuilder(
+                                          stream: customerCollectionReference
+                                              .doc(loggedInUserID)
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            var userDocument = snapshot.data;
+                                            if (!snapshot.hasData) {
+                                              return ClipOval(
                                                 child: Image.asset(
                                                   'images/user.png',
                                                   height: 120,
@@ -139,7 +121,32 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                   fit: BoxFit.cover,
                                                 ),
                                               );
-                                      }),
+                                            }
+                                            return userDocument[
+                                                            "profilePicUrl"] !=
+                                                        "" &&
+                                                    userDocument[
+                                                            "profilePicUrl"] !=
+                                                        null
+                                                ? ClipOval(
+                                                    child: Image.network(
+                                                      userDocument[
+                                                          "profilePicUrl"],
+                                                      height: 120,
+                                                      width: 120,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : ClipOval(
+                                                    child: Image.asset(
+                                                      'images/user.png',
+                                                      height: 120,
+                                                      width: 120,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  );
+                                          })
+                                      : Container(),
                             ),
                           ),
                           Positioned(

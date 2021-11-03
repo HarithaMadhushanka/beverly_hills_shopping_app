@@ -50,7 +50,7 @@ Future<void> checkAuthState() async {
 
         customerCollectionReference.get().then((QuerySnapshot querySnapshot) {
           querySnapshot.docs.forEach((doc) {
-            if (loggedInUserID == doc["userID"]) {
+            if (loggedInUserID == (doc.data() as dynamic)['userID']) {
               isCustomerLoggedIn = true;
               print('Customer is signed in!');
               runApp(MyApp());
@@ -60,7 +60,7 @@ Future<void> checkAuthState() async {
 
         outletCollectionReference.get().then((QuerySnapshot querySnapshot) {
           querySnapshot.docs.forEach((doc) {
-            if (loggedInUserID == doc["userID"]) {
+            if (loggedInUserID == (doc.data() as dynamic)['userID']) {
               isOutletLoggedIn = true;
               print('Outlet is signed in!');
               runApp(MyApp());

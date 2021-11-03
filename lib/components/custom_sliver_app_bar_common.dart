@@ -12,7 +12,7 @@ SliverAppBar buildCustomSliverAppBarCommon({
   return SliverAppBar(
     elevation: 10,
     backgroundColor: SecondaryColorLight,
-    pinned: false,
+    pinned: true,
     automaticallyImplyLeading: false,
     bottom: PreferredSize(
       preferredSize: Size.fromHeight(

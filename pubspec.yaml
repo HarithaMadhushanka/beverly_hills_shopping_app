@@ -21,6 +21,7 @@ dependencies:
   shared_preferences: ^2.0.6
   font_awesome_flutter: ^9.1.0
   image_cropper: ^1.4.1
+  syncfusion_flutter_datepicker: ^19.3.47
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,7 @@ flutter:
     - images/back_arrow.png
     - images/user.png
     - images/shopping.png
+    - images/stock_img_1.png
 
   fonts:
     - family: SF

@@ -34,81 +34,27 @@ SliverAppBar buildSliverAppBar(BuildContext context,
             ),
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: StreamBuilder(
-                  stream: isCustomer
-                      ? customerCollectionReference
-                          .doc(loggedInUserID)
-                          .snapshots()
-                      : outletCollectionReference
-                          .doc(loggedInUserID)
-                          .snapshots(),
-                  builder: (context, snapshot) {
-                    var userDocument = snapshot.data;
+              child: loggedInUserID != ""
+                  ? StreamBuilder(
+                      stream: isCustomer
+                          ? customerCollectionReference
+                              .doc(loggedInUserID)
+                              .snapshots()
+                          : outletCollectionReference
+                              .doc(loggedInUserID)
+                              .snapshots(),
+                      builder: (context, snapshot) {
+                        var userDocument = snapshot.data;
 
-                    if (!snapshot.hasData) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: PrimaryColorDark, width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'images/user.png',
-                            height: 35,
-                            width: 35,
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                      );
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: PrimaryColorDark, width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'images/user.png',
-                            height: 35,
-                            width: 35,
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                      );
-                    }
-                    return userDocument["profilePicUrl"] != "" &&
-                            userDocument["profilePicUrl"] != null
-                        ? GestureDetector(
-                            onTap: onTapProfile,
-                            behavior: HitTestBehavior.opaque,
+                        if (!snapshot.hasData) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: PrimaryColorDark, width: 2),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  userDocument["profilePicUrl"],
-                                  height: 35,
-                                  width: 35,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: PrimaryColorDark, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
                               child: Image.asset(
                                 'images/user.png',
                                 height: 35,
@@ -117,7 +63,80 @@ SliverAppBar buildSliverAppBar(BuildContext context,
                               ),
                             ),
                           );
-                  }),
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: PrimaryColorDark, width: 2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Image.asset(
+                                'images/user.png',
+                                height: 35,
+                                width: 35,
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ),
+                          );
+                        }
+                        return userDocument["profilePicUrl"] != "" &&
+                                userDocument["profilePicUrl"] != null
+                            ? GestureDetector(
+                                onTap: onTapProfile,
+                                behavior: HitTestBehavior.opaque,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: PrimaryColorDark, width: 2),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Image.network(
+                                      userDocument["profilePicUrl"],
+                                      height: 35,
+                                      width: 35,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: PrimaryColorDark, width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset(
+                                    'images/user.png',
+                                    height: 35,
+                                    width: 35,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              );
+                      })
+                  : Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: PrimaryColorDark, width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'images/user.png',
+                          height: 35,
+                          width: 35,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),

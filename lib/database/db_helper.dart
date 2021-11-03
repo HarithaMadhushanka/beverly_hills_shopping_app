@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:beverly_hills_shopping_app/models/customer.dart';
 import 'package:beverly_hills_shopping_app/models/outlet.dart';
+import 'package:beverly_hills_shopping_app/models/promotion.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
@@ -175,6 +176,7 @@ class DBHelper {
             .update({
               "outletName": outlet.outletName,
               "mobileNo": outlet.mobileNo,
+              "category": outlet.category,
               "addressLine1": outlet.addressLine1,
               "addressLine2": outlet.addressLine2,
               "addressLine3": outlet.addressLine3,
@@ -197,5 +199,76 @@ class DBHelper {
       isRegCompleted = data['isRegCompleted'];
     }
     return isRegCompleted;
+  }
+
+  /// Uploads Pictures (Firebase Storage) - COMMON
+  Future<String> uploadPic(File _imageFile, String type) async {
+    final promoRef = FirebaseFirestore.instance.collection('promotions').doc();
+
+    try {
+      if (type == "promotion") {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child('promotions/${promoRef.id}');
+        UploadTask uploadTask = storageReference.putFile(_imageFile);
+        await uploadTask;
+        storageReference.getDownloadURL().then((fileURL) {
+          updatePicUrl(promoRef.id, fileURL, type);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return promoRef.id;
+  }
+
+  /// Updates Firestore collection with Pic URL - COMMON
+  Future updatePicUrl(String _promoID, String _picUrl, String picType) async {
+    if (picType == "promotion") {
+      await promotionsCollectionReference
+          .doc(_promoID)
+          .update({"promoPicUrl": _picUrl})
+          .then((value) => print("Promotion Picture Updated"))
+          .catchError(
+              (error) => print("Failed to update Promotion Picture: $error"));
+    }
+  }
+
+  /// Updates all the Promotion details in Firestore
+  Future updatePromoDetails(String _promoID, Promotion promotion) async {
+    await promotionsCollectionReference
+        .doc(_promoID)
+        .set({
+          "promoPicUrl": promotion.promoPicUrl,
+          "promoTitle": promotion.promoTitle,
+          "promoID": _promoID,
+          "promoDesc": promotion.promoDesc,
+          "promoStartingDate": promotion.promoStartingDate,
+          "promoEndingDate": promotion.promoEndingDate,
+          "promoAddedTime": promotion.promoAddedTime,
+          "addedBy": loggedInUserID,
+          "isApproved": false,
+        })
+        .then((value) => print("Promotion Details Updated: " + _promoID))
+        .catchError(
+            (error) => print("Failed to update promotion details: $error"));
+  }
+
+  Future<void> approvePromotion(String _promoID) {
+    return promotionsCollectionReference
+        .doc(_promoID)
+        .update({
+          "isApproved": true,
+        })
+        .then((value) => print("Promotion Accepted"))
+        .catchError((error) => print("Failed to accept promotion: $error"));
+  }
+
+  Future<void> removePromotion(String _promoID) {
+    return promotionsCollectionReference
+        .doc(_promoID)
+        .delete()
+        .then((value) => print("Promotion Deleted"))
+        .catchError((error) => print("Failed to delete promotion: $error"));
   }
 }
