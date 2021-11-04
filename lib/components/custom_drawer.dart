@@ -261,7 +261,9 @@ Drawer buildDrawer(BuildContext context, {bool isCustomer, bool isAdmin}) {
                     context,
                     MaterialPageRoute(
                       builder: (_) => isCustomer && !isAdmin
-                          ? CustomerViewOutletsScreen()
+                          ? CustomerViewOutletsScreen(
+                              isComingFromDrawer: true,
+                            )
                           : OutletViewFeedbacksScreen(),
                     ),
                   );

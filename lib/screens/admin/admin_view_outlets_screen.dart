@@ -1,20 +1,17 @@
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_common.dart';
-import 'package:beverly_hills_shopping_app/screens/customer/customer_view_outlets_details_screen.dart';
+import 'package:beverly_hills_shopping_app/screens/admin/admin_outlet_details_screen.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class CustomerViewOutletsScreen extends StatefulWidget {
-  const CustomerViewOutletsScreen({Key key, @required this.isComingFromDrawer})
-      : super(key: key);
-  final bool isComingFromDrawer;
+class AdminViewOutletsScreen extends StatefulWidget {
+  const AdminViewOutletsScreen({Key key}) : super(key: key);
 
   @override
-  _CustomerViewOutletsScreenState createState() =>
-      _CustomerViewOutletsScreenState();
+  _AdminViewOutletsScreenState createState() => _AdminViewOutletsScreenState();
 }
 
-class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
+class _AdminViewOutletsScreenState extends State<AdminViewOutletsScreen> {
   int _selectedCategoryIndex = 0;
   String _selectedCategory = "";
   String _searchItem = "";
@@ -41,7 +38,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
           /// SLiver App bar
           buildCustomSliverAppBarCommon(
             context: context,
-            isBackNeeded: false,
+            isBackNeeded: true,
             title: 'Outlets',
             isTrailingNeeded: false,
           ),
@@ -227,9 +224,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (!snapshot.hasData) return Text("");
                                 return Container(
-                                  height: widget.isComingFromDrawer
-                                      ? height * 0.66
-                                      : height * 0.6,
+                                  height: height * 0.66,
                                   child: ListView.builder(
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data.docs.length,
@@ -245,7 +240,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) =>
-                                                      CustomerViewOutletsDetailsScreen(
+                                                      AdminOutletDetailsScreen(
                                                     outlet: outlet,
                                                   ),
                                                 ),

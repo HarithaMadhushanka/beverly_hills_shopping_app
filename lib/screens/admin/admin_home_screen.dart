@@ -1,7 +1,9 @@
 import 'package:beverly_hills_shopping_app/components/custom_drawer.dart';
 import 'package:beverly_hills_shopping_app/components/custom_home_container.dart';
+import 'package:beverly_hills_shopping_app/components/custom_outline_button.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_pending_promotions_screen.dart';
+import 'package:beverly_hills_shopping_app/screens/admin/admin_view_outlets_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_profile_screen.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
     return WillPopScope(
       child: Scaffold(
         key: _adminHomeScaffoldKey,
@@ -106,8 +110,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          AdminPendingPromotionsScreen(),
+                                      builder: (_) => AdminViewOutletsScreen(),
                                     ),
                                   ),
                                   isLeft: false,
@@ -131,6 +134,19 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               ),
             )
           ],
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(25, 0, 25, 25),
+          child: CustomOutlineButton(
+            width: width,
+            height: 60,
+            text: 'Logout',
+            buttonTextSize: 16,
+            fontColor: Colors.red,
+            borderColor: Colors.red,
+            borderWidth: 1.5,
+            onTap: () => Navigator.pop(context),
+          ),
         ),
       ),
       onWillPop: _onWillPop,

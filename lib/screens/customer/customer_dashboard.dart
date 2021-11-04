@@ -20,7 +20,9 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
     CustomerHomeScreen(),
     CustomerNavigationScreen(),
     CustomerViewProductsScreen(),
-    CustomerViewOutletsScreen(),
+    CustomerViewOutletsScreen(
+      isComingFromDrawer: false,
+    ),
   ];
 
   @override

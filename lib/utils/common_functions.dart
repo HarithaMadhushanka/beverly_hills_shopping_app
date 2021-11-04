@@ -10,10 +10,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void showToast(BuildContext context, String msg) {
+void showToast(BuildContext context, String msg, {Duration duration}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      duration: Duration(seconds: 1),
+      duration: duration != null ? duration : Duration(seconds: 2),
       backgroundColor: PrimaryColorLight,
       content: Text(
         msg,
@@ -52,6 +52,8 @@ Future<void> saveUpdatedUserDetailsLocally({@required String userType}) async {
               outletObj.profilePicUrl = doc["profilePicUrl"];
               outletObj.outletName = doc["outletName"];
               outletObj.mobileNo = doc["mobileNo"];
+              outletObj.category = doc["category"];
+              outletObj.outletDesc = doc["outletDesc"];
               outletObj.category = doc["category"];
               outletObj.email = doc["email"];
               outletObj.addressLine1 = doc["addressLine1"];

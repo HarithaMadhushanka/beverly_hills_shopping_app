@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:beverly_hills_shopping_app/models/customer.dart';
+import 'package:beverly_hills_shopping_app/models/feedback.dart' as fdb;
 import 'package:beverly_hills_shopping_app/models/outlet.dart';
 import 'package:beverly_hills_shopping_app/models/promotion.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
@@ -177,6 +178,7 @@ class DBHelper {
               "outletName": outlet.outletName,
               "mobileNo": outlet.mobileNo,
               "category": outlet.category,
+              "outletDesc": outlet.outletDesc,
               "addressLine1": outlet.addressLine1,
               "addressLine2": outlet.addressLine2,
               "addressLine3": outlet.addressLine3,
@@ -270,5 +272,20 @@ class DBHelper {
         .delete()
         .then((value) => print("Promotion Deleted"))
         .catchError((error) => print("Failed to delete promotion: $error"));
+  }
+
+  Future<void> giveFeedBack(fdb.Feedback _feedback) async {
+    await feedbacksCollectionReference
+        .doc()
+        .set({
+          "feedback": _feedback.feedback,
+          "rating": _feedback.rating,
+          "givenBy": _feedback.givenBy,
+          "outletID": _feedback.outletID,
+          "addedDate": _feedback.addedDate,
+        })
+        .then((value) => print("Feedback Details Updated: "))
+        .catchError(
+            (error) => print("Failed to update feedback details: $error"));
   }
 }

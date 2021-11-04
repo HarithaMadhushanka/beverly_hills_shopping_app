@@ -21,7 +21,7 @@ dependencies:
   shared_preferences: ^2.0.6
   font_awesome_flutter: ^9.1.0
   image_cropper: ^1.4.1
-  syncfusion_flutter_datepicker: ^19.3.47
+  flutter_rating_bar: ^4.0.0
 
 dev_dependencies:
   flutter_test:

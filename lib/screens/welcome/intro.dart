@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:beverly_hills_shopping_app/components/custom_description_box.dart';
 import 'package:beverly_hills_shopping_app/components/custom_text_field.dart';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/models/customer.dart';
@@ -51,6 +52,7 @@ class _IntroScreenState extends State<IntroScreen> {
       TextEditingController();
   final TextEditingController address3OutletController =
       TextEditingController();
+  final TextEditingController _outletDescController = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
   File _imageFile;
@@ -62,6 +64,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return WillPopScope(
       child: IntroductionScreen(
@@ -277,6 +280,14 @@ class _IntroScreenState extends State<IntroScreen> {
                             icon: Icons.note,
                             iconSize: 22,
                             textInputType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          CustomDescriptionBox(
+                            width: width,
+                            height: height,
+                            controller: _outletDescController,
                           ),
                           SizedBox(
                             height: 15,
@@ -514,6 +525,7 @@ class _IntroScreenState extends State<IntroScreen> {
       outlet.outletName = nameOutletController.text;
       outlet.mobileNo = mobileNoOutletController.text;
       outlet.category = _selectedCategory;
+      outlet.outletDesc = _outletDescController.text;
       outlet.addressLine1 = address1OutletController.text;
       outlet.addressLine2 = address2OutletController.text;
       outlet.addressLine3 = address3OutletController.text;

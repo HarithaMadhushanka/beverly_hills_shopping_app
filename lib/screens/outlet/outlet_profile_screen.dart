@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:beverly_hills_shopping_app/components/custom_description_box.dart';
 import 'package:beverly_hills_shopping_app/components/custom_outline_button.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_common.dart';
 import 'package:beverly_hills_shopping_app/components/custom_text_field.dart';
@@ -27,28 +28,34 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
   TextEditingController _outletAddress1Controller = TextEditingController();
   TextEditingController _outletAddress2Controller = TextEditingController();
   TextEditingController _outletAddress3Controller = TextEditingController();
+  TextEditingController _outletDescController = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
   File _imageFile;
   String _pickedImageFilePath = "";
   DBHelper _dbHelper = DBHelper();
 
+  String _selectedCategory;
+
   @override
   void initState() {
     super.initState();
     common.saveUpdatedUserDetailsLocally(userType: "outlet").whenComplete(
         () => common.getUserDetails(isCustomer: false).then((value) {
+              _selectedCategory = value.category;
               _outletNameController.text = value.outletName;
               _outletMobileNoController.text = value.mobileNo;
               _outletAddress1Controller.text = value.addressLine1;
               _outletAddress2Controller.text = value.addressLine2;
               _outletAddress3Controller.text = value.addressLine3;
+              _outletDescController.text = value.outletDesc;
             }));
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: SecondaryColorLight,
@@ -232,6 +239,59 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
                             textInputType: TextInputType.text,
                           ),
                           SizedBox(
+                            height: 15,
+                          ),
+                          CustomDescriptionBox(
+                            width: width,
+                            height: height,
+                            controller: _outletDescController,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            width: width,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: PrimaryColorDark),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: DropdownButtonFormField(
+                              value: _selectedCategory,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(top: 10),
+                                hintText: _selectedCategory == null
+                                    ? 'Please select a category'
+                                    : _selectedCategory,
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                icon: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
+                                  child: Icon(
+                                    Icons.list,
+                                    size: 22,
+                                    color: SecondaryColorDark,
+                                  ),
+                                ),
+                              ),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedCategory = newValue;
+                                });
+                              },
+                              items: outletCategories.map((category) {
+                                return DropdownMenuItem(
+                                  child: Text(category),
+                                  value: category,
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          SizedBox(
                             height: 30,
                           ),
                           CustomOutlineButton(
@@ -280,6 +340,8 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
     _outlet.addressLine1 = _outletAddress1Controller.text;
     _outlet.addressLine2 = _outletAddress2Controller.text;
     _outlet.addressLine3 = _outletAddress3Controller.text;
+    _outlet.outletDesc = _outletDescController.text;
+    _outlet.category = _selectedCategory;
     _dbHelper
         .updateUserDetails(loggedInUserID, "outlet", outlet: _outlet)
         .whenComplete(() {
