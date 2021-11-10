@@ -3,6 +3,7 @@ import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart
 import 'package:beverly_hills_shopping_app/components/product_component.dart';
 import 'package:beverly_hills_shopping_app/components/promotions_component.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_profile_screen.dart';
+import 'package:beverly_hills_shopping_app/screens/customer/customer_view_product_details.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_products_screen.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -160,6 +161,9 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) return Text("");
                                     return ListView.builder(
+                                      physics: const BouncingScrollPhysics(
+                                          parent:
+                                              AlwaysScrollableScrollPhysics()),
                                       scrollDirection: Axis.horizontal,
                                       itemCount: snapshot.data.docs.length < 5
                                           ? snapshot.data.docs.length
@@ -210,7 +214,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) =>
-                                          CustomerViewProductsScreen(),
+                                          CustomerViewProductsScreen(
+                                              isComingFromDrawer: true),
                                     ),
                                   ),
                                   child: Text(
@@ -224,43 +229,52 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                                 ),
                               ],
                             ),
-                            Container(
-                              margin: EdgeInsets.only(bottom: 30),
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: ListView(
-                                physics: NeverScrollableScrollPhysics(),
-                                // scrollDirection: Axis.vertical,
-                                children: [
-                                  PopularPlacesWidget(
-                                    imagePath:
-                                        'https://www.marketing91.com/wp-content/uploads/2018/08/Product-Portfolio-1.jpg',
-                                    title: 'Product 1',
-                                    subtitle: 'Product description 1',
-                                    price: '269\$',
-                                  ),
-                                  PopularPlacesWidget(
-                                    imagePath:
-                                        'https://www.marketing91.com/wp-content/uploads/2018/08/Product-Portfolio-1.jpg',
-                                    title: 'Product 2',
-                                    subtitle: 'Product description 2',
-                                    price: '269\$',
-                                  ),
-                                  PopularPlacesWidget(
-                                    imagePath:
-                                        'https://www.marketing91.com/wp-content/uploads/2018/08/Product-Portfolio-1.jpg',
-                                    title: 'Product 3',
-                                    subtitle: 'Product description 3',
-                                    price: '269\$',
-                                  ),
-                                  PopularPlacesWidget(
-                                    imagePath:
-                                        'https://www.marketing91.com/wp-content/uploads/2018/08/Product-Portfolio-1.jpg',
-                                    title: 'Product 3',
-                                    subtitle: 'Product description 3',
-                                    price: '269\$',
-                                  ),
-                                ],
+                            SingleChildScrollView(
+                              physics: ScrollPhysics(),
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 30),
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.865,
+                                child: StreamBuilder(
+                                    stream: productCollectionReference
+                                        .orderBy('addedTime', descending: true)
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) return Text("");
+                                      return ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: snapshot.data.docs.length < 5
+                                            ? snapshot.data.docs.length
+                                            : 5,
+                                        itemBuilder: (context, index) {
+                                          DocumentSnapshot product =
+                                              snapshot.data.docs[index];
+
+                                          return GestureDetector(
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    CustomerViewProductDetailsScreen(
+                                                  product: product,
+                                                ),
+                                              ),
+                                            ),
+                                            behavior: HitTestBehavior.opaque,
+                                            child: PopularPlacesWidget(
+                                              imagePath:
+                                                  product['productPicUrl'],
+                                              title: product['productTitle'],
+                                              subtitle: product['productDesc'],
+                                              price: "\$ " +
+                                                  product['productPrice'] +
+                                                  ".00",
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }),
                               ),
                             ),
                           ],

@@ -145,7 +145,7 @@ Drawer buildDrawer(BuildContext context, {bool isCustomer, bool isAdmin}) {
                           userDocument["profilePicUrl"],
                           height: 35,
                           width: 35,
-                          fit: BoxFit.fitWidth,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     );
@@ -197,7 +197,9 @@ Drawer buildDrawer(BuildContext context, {bool isCustomer, bool isAdmin}) {
                     context,
                     MaterialPageRoute(
                       builder: (_) => isCustomer && !isAdmin
-                          ? CustomerNavigationScreen()
+                          ? CustomerNavigationScreen(
+                              isComingFromDrawer: true,
+                            )
                           : OutletAddPromotionsScreen(),
                     ),
                   );
@@ -228,7 +230,9 @@ Drawer buildDrawer(BuildContext context, {bool isCustomer, bool isAdmin}) {
                     context,
                     MaterialPageRoute(
                       builder: (_) => isCustomer && !isAdmin
-                          ? CustomerViewProductsScreen()
+                          ? CustomerViewProductsScreen(
+                              isComingFromDrawer: true,
+                            )
                           : OutletAddProductsScreen(),
                     ),
                   );

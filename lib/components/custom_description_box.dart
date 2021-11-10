@@ -55,7 +55,7 @@ class _CustomDescriptionBoxState extends State<CustomDescriptionBox> {
               child: TextFormField(
                 enabled: widget.isNotEditable == null ? true : false,
                 initialValue:
-                    widget.initialValue != null ? widget.initialValue : "",
+                    widget.initialValue != null ? widget.initialValue : null,
                 controller:
                     widget.controller != null ? widget.controller : null,
                 maxLines: 6,

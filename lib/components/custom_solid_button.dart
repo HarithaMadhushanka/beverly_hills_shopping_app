@@ -9,20 +9,24 @@ class CustomSolidButton extends StatelessWidget {
     @required this.text,
     @required this.onTap,
     this.buttonTextSize,
+    this.isDisabled,
   }) : super(key: key);
   final double width;
   final double height;
   final double buttonTextSize;
   final String text;
   final VoidCallback onTap;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: PrimaryColorDark,
+      color: isDisabled != null
+          ? PrimaryColorDark.withOpacity(0.5)
+          : PrimaryColorDark,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
-        onTap: onTap,
+        onTap: isDisabled != null ? null : onTap,
         splashColor: SecondaryColorDark,
         borderRadius: BorderRadius.circular(20),
         child: Container(
@@ -31,16 +35,25 @@ class CustomSolidButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: PrimaryColorDark),
+            border: Border.all(
+                color: isDisabled != null
+                    ? Colors.black.withOpacity(0.1)
+                    : PrimaryColorDark),
           ),
           child: Center(
             child: Text(
               text,
-              style: TextStyle(
-                fontSize: buttonTextSize != null ? buttonTextSize : 18,
-                fontWeight: FontWeight.bold,
-                color: PrimaryColorLight,
-              ),
+              style: isDisabled != null
+                  ? TextStyle(
+                      fontSize: buttonTextSize != null ? buttonTextSize : 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white.withOpacity(0.8),
+                    )
+                  : TextStyle(
+                      fontSize: buttonTextSize != null ? buttonTextSize : 18,
+                      fontWeight: FontWeight.bold,
+                      color: PrimaryColorLight,
+                    ),
             ),
           ),
         ),

@@ -10,7 +10,6 @@ import 'package:beverly_hills_shopping_app/screens/welcome/welcome.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -324,7 +323,7 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
   Future<void> _signOut() async {
     isCustomerLoggedIn = false;
     loggedInUserID = "";
-    await FirebaseAuth.instance.signOut().then((value) {
+    await _dbHelper.commonUserSignOut().then((value) {
       Route route = MaterialPageRoute(
         builder: (c) => WelcomeScreen(),
       );

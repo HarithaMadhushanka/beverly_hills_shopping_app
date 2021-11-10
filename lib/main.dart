@@ -45,7 +45,8 @@ Future<void> checkAuthState() async {
         print('User is currently signed out!');
         isCustomerLoggedIn = false;
         runApp(MyApp());
-      } else {
+      } else if (user != null && user.isAnonymous == false) {
+        // _dbHelper.DBHelper().commonUserSignOut();
         loggedInUserID = user.uid;
 
         customerCollectionReference.get().then((QuerySnapshot querySnapshot) {
@@ -67,6 +68,8 @@ Future<void> checkAuthState() async {
             }
           });
         });
+      } else {
+        loggedInUserID = "";
       }
     },
   );

@@ -54,6 +54,8 @@ class _CustomerViewPromotionsScreenState
                           return Container(
                             height: height * 0.88,
                             child: ListView.builder(
+                              physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
                               scrollDirection: Axis.vertical,
                               itemCount: snapshot.data.docs.length,
                               itemBuilder: (context, index) {

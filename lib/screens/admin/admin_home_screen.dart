@@ -2,9 +2,12 @@ import 'package:beverly_hills_shopping_app/components/custom_drawer.dart';
 import 'package:beverly_hills_shopping_app/components/custom_home_container.dart';
 import 'package:beverly_hills_shopping_app/components/custom_outline_button.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart';
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
+import 'package:beverly_hills_shopping_app/screens/admin/admin_add_routes_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_pending_promotions_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_view_outlets_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_profile_screen.dart';
+import 'package:beverly_hills_shopping_app/screens/welcome/welcome.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,6 +22,7 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final GlobalKey<ScaffoldState> _adminHomeScaffoldKey =
       new GlobalKey<ScaffoldState>();
+  DBHelper _dbHelper = DBHelper();
 
   List<Color> colors = [
     Colors.red.withOpacity(0.2),
@@ -123,6 +127,26 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                     color: PrimaryColorDark,
                                   ),
                                 ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CustomHomeContainer(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AdminAddRoutesScreen(),
+                                    ),
+                                  ),
+                                  isLeft: true,
+                                  title: "Add Routes",
+                                  color: colors[2],
+                                  iconBgColor: Colors.white.withOpacity(0.8),
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.locationArrow,
+                                    size: 22,
+                                    color: PrimaryColorDark,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
@@ -145,7 +169,15 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             fontColor: Colors.red,
             borderColor: Colors.red,
             borderWidth: 1.5,
-            onTap: () => Navigator.pop(context),
+            onTap: () async {
+              await _dbHelper.commonUserSignOut().then((value) {
+                Route route = MaterialPageRoute(
+                  builder: (c) => WelcomeScreen(),
+                );
+                Navigator.pushReplacement(context, route);
+              });
+              loggedInUserID = "";
+            },
           ),
         ),
       ),

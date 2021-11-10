@@ -3,6 +3,7 @@ import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'admin_home_screen.dart';
@@ -18,6 +19,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   bool isHidden = true;
   TextEditingController adminLoginEmailController = TextEditingController();
   TextEditingController adminLoginPasswordController = TextEditingController();
+  DBHelper _dbHelper = DBHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -177,13 +179,17 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
   void _loginAdmin() async {
     List<String> adminCredentials = [];
+    adminCredentials = await _dbHelper.getAdminCredentials();
 
-    adminCredentials = await DBHelper().getAdminCredentials();
     print(adminCredentials);
     if (adminCredentials[0] == adminLoginEmailController.text &&
         adminCredentials[1] == adminLoginPasswordController.text) {
-      Route route = MaterialPageRoute(builder: (c) => AdminHomeScreen());
-      Navigator.pushReplacement(context, route);
+      UserCredential userCredential = await _dbHelper.loginAdmin();
+
+      if (userCredential != null) {
+        Route route = MaterialPageRoute(builder: (c) => AdminHomeScreen());
+        Navigator.pushReplacement(context, route);
+      }
     } else {
       common.showToast(context, "Please try again");
     }

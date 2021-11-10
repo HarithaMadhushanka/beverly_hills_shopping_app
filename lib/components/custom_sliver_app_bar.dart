@@ -46,6 +46,24 @@ SliverAppBar buildSliverAppBar(BuildContext context,
                       builder: (context, snapshot) {
                         var userDocument = snapshot.data;
 
+                        if (snapshot.hasError) {
+                          Container(
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: PrimaryColorDark, width: 2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                'images/user.png',
+                                height: 35,
+                                width: 35,
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ),
+                          );
+                        }
                         if (!snapshot.hasData) {
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(10),

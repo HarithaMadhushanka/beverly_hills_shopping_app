@@ -62,6 +62,9 @@ class _AdminViewOutletsScreenState extends State<AdminViewOutletsScreen> {
                                 child: Container(
                                   height: 60,
                                   child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(
+                                        parent:
+                                            AlwaysScrollableScrollPhysics()),
                                     scrollDirection: Axis.horizontal,
                                     itemCount: outletCategories.length,
                                     itemBuilder: (context, index) {
@@ -226,6 +229,9 @@ class _AdminViewOutletsScreenState extends State<AdminViewOutletsScreen> {
                                 return Container(
                                   height: height * 0.66,
                                   child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(
+                                        parent:
+                                            AlwaysScrollableScrollPhysics()),
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data.docs.length,
                                     itemBuilder: (context, index) {

@@ -1,5 +1,7 @@
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_common.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_outlets_details_screen.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,8 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
   int _selectedCategoryIndex = 0;
   String _selectedCategory = "";
   String _searchItem = "";
-  TextEditingController categoryTextEditingController = TextEditingController();
+  TextEditingController _categoryTextEditingController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -41,7 +44,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
           /// SLiver App bar
           buildCustomSliverAppBarCommon(
             context: context,
-            isBackNeeded: false,
+            isBackNeeded: widget.isComingFromDrawer ? true : false,
             title: 'Outlets',
             isTrailingNeeded: false,
           ),
@@ -65,6 +68,9 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                 child: Container(
                                   height: 60,
                                   child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(
+                                        parent:
+                                            AlwaysScrollableScrollPhysics()),
                                     scrollDirection: Axis.horizontal,
                                     itemCount: outletCategories.length,
                                     itemBuilder: (context, index) {
@@ -134,7 +140,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                               border: Border.all(color: Colors.black),
                             ),
                             child: TextFormField(
-                              controller: categoryTextEditingController,
+                              controller: _categoryTextEditingController,
                               textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(top: 15),
@@ -168,13 +174,14 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                   ),
                                   suffixIcon: Visibility(
                                     visible:
-                                        categoryTextEditingController.text != ""
+                                        _categoryTextEditingController.text !=
+                                                ""
                                             ? true
                                             : false,
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          categoryTextEditingController.text =
+                                          _categoryTextEditingController.text =
                                               "";
                                         });
                                       },
@@ -191,7 +198,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                   )),
                               onChanged: (value) {
                                 setState(() {
-                                  _searchItem = capitalize(value);
+                                  _searchItem = common.capitalize(value);
                                 });
                               },
                             ),
@@ -201,17 +208,18 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                           ),
                           StreamBuilder<QuerySnapshot>(
                               stream: _selectedCategoryIndex == 0 &&
-                                      categoryTextEditingController.text.isEmpty
+                                      _categoryTextEditingController
+                                          .text.isEmpty
                                   ? outletCollectionReference.snapshots()
                                   : _selectedCategoryIndex != 0 &&
-                                          categoryTextEditingController
+                                          _categoryTextEditingController
                                               .text.isEmpty
                                       ? outletCollectionReference
                                           .where('category',
                                               isEqualTo: _selectedCategory)
                                           .snapshots()
                                       : _selectedCategoryIndex == 0 &&
-                                              categoryTextEditingController
+                                              _categoryTextEditingController
                                                   .text.isNotEmpty
                                           ? outletCollectionReference
                                               .where('outletName',
@@ -231,6 +239,9 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                       ? height * 0.66
                                       : height * 0.6,
                                   child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(
+                                        parent:
+                                            AlwaysScrollableScrollPhysics()),
                                     scrollDirection: Axis.vertical,
                                     itemCount: snapshot.data.docs.length,
                                     itemBuilder: (context, index) {
@@ -253,6 +264,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                             },
                                             behavior: HitTestBehavior.opaque,
                                             child: Container(
+                                              height: 120,
                                               decoration: BoxDecoration(
                                                 color: PrimaryColorLight,
                                                 borderRadius:
@@ -297,46 +309,52 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: 2,
-                                                        ),
-                                                        Text(
-                                                          outlet["outletName"],
-                                                          style: TextStyle(
-                                                            color:
-                                                                PrimaryColorDark,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18,
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 2,
                                                           ),
-                                                        ),
-                                                        Container(
-                                                          height: 65,
-                                                          width: 230,
-                                                          child: Text(
+                                                          Text(
                                                             outlet[
-                                                                "outletDesc"],
+                                                                "outletName"],
                                                             style: TextStyle(
                                                               color:
                                                                   PrimaryColorDark,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w400,
-                                                              fontSize: 14,
+                                                                      .bold,
+                                                              fontSize: 18,
                                                             ),
-                                                            textAlign: TextAlign
-                                                                .justify,
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                      ],
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: Text(
+                                                                outlet[
+                                                                    "outletDesc"],
+                                                                style:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      PrimaryColorDark,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  fontSize: 14,
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .justify,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -364,6 +382,4 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
       ),
     );
   }
-
-  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }

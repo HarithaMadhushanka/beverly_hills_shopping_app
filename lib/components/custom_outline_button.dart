@@ -12,6 +12,7 @@ class CustomOutlineButton extends StatelessWidget {
     this.fontColor,
     this.borderColor,
     this.borderWidth,
+    this.isDisabled,
   }) : super(key: key);
   final double width;
   final double height;
@@ -21,14 +22,17 @@ class CustomOutlineButton extends StatelessWidget {
   final Color fontColor;
   final Color borderColor;
   final double borderWidth;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: SecondaryColorLight,
+      color: isDisabled != null
+          ? SecondaryColorLight.withOpacity(0.5)
+          : SecondaryColorLight,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
-        onTap: onTap,
+        onTap: isDisabled != null ? null : onTap,
         splashColor: PrimaryColorLight,
         borderRadius: BorderRadius.circular(20),
         child: Container(
@@ -37,18 +41,28 @@ class CustomOutlineButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-                color: borderColor != null ? borderColor : PrimaryColorDark,
-                width: borderWidth != null ? borderWidth : 1),
+            border: isDisabled != null
+                ? Border.all(
+                    color: borderColor != null ? borderColor : Colors.grey,
+                    width: borderWidth != null ? borderWidth : 1)
+                : Border.all(
+                    color: borderColor != null ? borderColor : PrimaryColorDark,
+                    width: borderWidth != null ? borderWidth : 1),
           ),
           child: Center(
             child: Text(
               text,
-              style: TextStyle(
-                fontSize: buttonTextSize != null ? buttonTextSize : 18,
-                fontWeight: FontWeight.bold,
-                color: fontColor != null ? fontColor : PrimaryColorDark,
-              ),
+              style: isDisabled != null
+                  ? TextStyle(
+                      fontSize: buttonTextSize != null ? buttonTextSize : 18,
+                      fontWeight: FontWeight.bold,
+                      color: fontColor != null ? fontColor : Colors.grey,
+                    )
+                  : TextStyle(
+                      fontSize: buttonTextSize != null ? buttonTextSize : 18,
+                      fontWeight: FontWeight.bold,
+                      color: fontColor != null ? fontColor : PrimaryColorDark,
+                    ),
             ),
           ),
         ),

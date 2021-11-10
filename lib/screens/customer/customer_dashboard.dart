@@ -1,7 +1,10 @@
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_home_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_navigation_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_outlets_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_products_screen.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,12 +17,23 @@ class CustomerDashboard extends StatefulWidget {
 }
 
 class _CustomerDashboardState extends State<CustomerDashboard> {
+  DBHelper _dbHelper = DBHelper();
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    common.getOutletData();
+    super.initState();
+  }
 
   final List _children = [
     CustomerHomeScreen(),
-    CustomerNavigationScreen(),
-    CustomerViewProductsScreen(),
+    CustomerNavigationScreen(
+      isComingFromDrawer: false,
+    ),
+    CustomerViewProductsScreen(
+      isComingFromDrawer: false,
+    ),
     CustomerViewOutletsScreen(
       isComingFromDrawer: false,
     ),

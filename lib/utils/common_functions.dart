@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/models/customer.dart';
 import 'package:beverly_hills_shopping_app/models/outlet.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
@@ -149,3 +150,18 @@ Future<String> selectDate(BuildContext context, String dateType) async {
 
   return date;
 }
+
+Future getOutletData() async {
+  DBHelper _dbHelper = DBHelper();
+
+  navigationStartList = await _dbHelper.getOutletsWithRoutes();
+  navigationEndList = await _dbHelper.getOutletsWithRoutes();
+}
+
+String truncateWithEllipsis(int cutoff, String myString) {
+  return (myString.length <= cutoff)
+      ? myString
+      : '${myString.substring(0, cutoff)}...';
+}
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

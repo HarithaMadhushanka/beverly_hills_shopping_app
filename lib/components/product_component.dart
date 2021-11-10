@@ -59,13 +59,16 @@ class PopularPlacesWidget extends StatelessWidget {
                           fontSize: 16.0,
                         ),
                       ),
-                      Container(
-                        height: 35,
-                        child: Text(
-                          subtitle,
-                          style: TextStyle(
-                            color: PrimaryColorDark,
-                            fontSize: 14.0,
+                      Expanded(
+                        child: Container(
+                          height: 35,
+                          child: Text(
+                            subtitle,
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: PrimaryColorDark,
+                              fontSize: 14.0,
+                            ),
                           ),
                         ),
                       ),

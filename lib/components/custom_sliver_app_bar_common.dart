@@ -1,3 +1,4 @@
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +66,7 @@ SliverAppBar buildCustomSliverAppBarCommon({
                       width: MediaQuery.of(context).size.width * 0.15,
                     ),
               Text(
-                title,
+                truncateWithEllipsis(20, title),
                 style: TextStyle(
                   color: PrimaryColorDark,
                   fontSize: 18,

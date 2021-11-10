@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:beverly_hills_shopping_app/models/customer.dart';
 import 'package:beverly_hills_shopping_app/models/feedback.dart' as fdb;
 import 'package:beverly_hills_shopping_app/models/outlet.dart';
+import 'package:beverly_hills_shopping_app/models/product.dart';
 import 'package:beverly_hills_shopping_app/models/promotion.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
@@ -78,6 +79,7 @@ class DBHelper {
             "userID": firebaseUser.uid,
             "email": firebaseUser.email,
             "isRegCompleted": false,
+            "isRouteAdded": false,
           });
   }
 
@@ -117,6 +119,14 @@ class DBHelper {
     });
 
     return adminCredentials;
+  }
+
+  Future<UserCredential> loginAdmin() async {
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInAnonymously();
+
+    print("Admin Logged In");
+    return userCredential;
   }
 
   /// Uploads User's Profile pic (Firebase Storage)
@@ -204,8 +214,10 @@ class DBHelper {
   }
 
   /// Uploads Pictures (Firebase Storage) - COMMON
-  Future<String> uploadPic(File _imageFile, String type) async {
+  Future<String> uploadPic(File _imageFile, String type,
+      {String outletID, String imgName}) async {
     final promoRef = FirebaseFirestore.instance.collection('promotions').doc();
+    final productRef = FirebaseFirestore.instance.collection('products').doc();
 
     try {
       if (type == "promotion") {
@@ -217,22 +229,64 @@ class DBHelper {
           updatePicUrl(promoRef.id, fileURL, type);
         });
       }
+      if (type == "navigationRoute") {
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('navigationRoutes/$outletID/$imgName');
+        UploadTask uploadTask = storageReference.putFile(_imageFile);
+        await uploadTask;
+        storageReference.getDownloadURL().then((fileURL) {
+          updatePicUrl(outletID, fileURL, type, imgName: imgName);
+        });
+      }
+      if (type == "product") {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child('products/${productRef.id}');
+        UploadTask uploadTask = storageReference.putFile(_imageFile);
+        await uploadTask;
+        storageReference.getDownloadURL().then((fileURL) {
+          updatePicUrl(productRef.id, fileURL, type);
+        });
+      }
     } catch (e) {
       print(e);
     }
 
-    return promoRef.id;
+    return type == "promotion"
+        ? promoRef.id
+        : type == "product"
+            ? productRef.id
+            : null;
   }
 
   /// Updates Firestore collection with Pic URL - COMMON
-  Future updatePicUrl(String _promoID, String _picUrl, String picType) async {
+  Future updatePicUrl(String _docID, String _picUrl, String picType,
+      {String imgName}) async {
     if (picType == "promotion") {
       await promotionsCollectionReference
-          .doc(_promoID)
+          .doc(_docID)
           .update({"promoPicUrl": _picUrl})
           .then((value) => print("Promotion Picture Updated"))
           .catchError(
               (error) => print("Failed to update Promotion Picture: $error"));
+    } else if (picType == "navigationRoute") {
+      await outletCollectionReference
+          .doc(_docID)
+          .update({imgName: _picUrl}).then((value) {
+        print("Navigation Route Picture Updated");
+        outletCollectionReference.doc(_docID).update({
+          "isRouteAdded": true,
+        });
+        print("Route Status Updated!");
+      }).catchError((error) =>
+              print("Failed to update Navigation Route Picture: $error"));
+    } else if (picType == "product") {
+      await productCollectionReference
+          .doc(_docID)
+          .update({"productPicUrl": _picUrl})
+          .then((value) => print("Product Picture Updated"))
+          .catchError(
+              (error) => print("Failed to update Product Picture: $error"));
     }
   }
 
@@ -254,6 +308,24 @@ class DBHelper {
         .then((value) => print("Promotion Details Updated: " + _promoID))
         .catchError(
             (error) => print("Failed to update promotion details: $error"));
+  }
+
+  /// Updates all the Promotion details in Firestore
+  Future updateProductDetails(String _productID, Product product) async {
+    await productCollectionReference
+        .doc(_productID)
+        .set({
+          "productTitle": product.productTitle,
+          "productPrice": product.productPrice,
+          "addedTime": product.addedTime,
+          "productDesc": product.productDesc,
+          "productCategory": product.productCategory,
+          "addedBy": product.addedBy,
+          "productID": _productID,
+        })
+        .then((value) => print("Product Details Updated: " + _productID))
+        .catchError(
+            (error) => print("Failed to update Product details: $error"));
   }
 
   Future<void> approvePromotion(String _promoID) {
@@ -287,5 +359,40 @@ class DBHelper {
         .then((value) => print("Feedback Details Updated: "))
         .catchError(
             (error) => print("Failed to update feedback details: $error"));
+  }
+
+  Future<String> getOutletID(String outletName, {bool isCommon}) async {
+    String selectedOutletID = "";
+    await outletCollectionReference
+        .where('outletName', isEqualTo: outletName)
+        .where("isRouteAdded", isEqualTo: isCommon != null ? true : false)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        selectedOutletID = doc.id;
+        // print(selectedOutletID);
+      });
+    });
+
+    return selectedOutletID;
+  }
+
+  Future<void> commonUserSignOut() async {
+    await FirebaseAuth.instance.signOut();
+    print("User Signed Out!");
+  }
+
+  Future<List> getOutletsWithRoutes() async {
+    List<String> outletsList = [];
+    await outletCollectionReference
+        .where("isRouteAdded", isEqualTo: true)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        outletsList.add(doc.get('outletName'));
+      });
+    });
+    print(outletsList);
+    return outletsList;
   }
 }
