@@ -2,9 +2,12 @@ import 'package:beverly_hills_shopping_app/components/custom_drawer.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart';
 import 'package:beverly_hills_shopping_app/components/product_component.dart';
 import 'package:beverly_hills_shopping_app/components/promotions_component.dart';
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_profile_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_product_details.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_products_screen.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +25,14 @@ class CustomerHomeScreen extends StatefulWidget {
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   final GlobalKey<ScaffoldState> _customerHomeScaffoldKey =
       new GlobalKey<ScaffoldState>();
+  DBHelper _dbHelper = DBHelper();
+
+  @override
+  void initState() {
+    _dbHelper.sendStatistics(common.getDay(), common.getCurrentHourIn24(),
+        shouldUpdate: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,14 +183,18 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                                         DocumentSnapshot promotion =
                                             snapshot.data.docs[index];
 
-                                        return PromotionsComponent(
-                                          imagePath: promotion['promoPicUrl'],
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  CustomerViewPromotionDetailsScreen(
-                                                promotion: promotion,
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 2),
+                                          child: PromotionsComponent(
+                                            imagePath: promotion['promoPicUrl'],
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    CustomerViewPromotionDetailsScreen(
+                                                  promotion: promotion,
+                                                ),
                                               ),
                                             ),
                                           ),

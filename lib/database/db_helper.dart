@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:beverly_hills_shopping_app/models/customer.dart';
 import 'package:beverly_hills_shopping_app/models/feedback.dart' as fdb;
+import 'package:beverly_hills_shopping_app/models/order.dart';
 import 'package:beverly_hills_shopping_app/models/outlet.dart';
 import 'package:beverly_hills_shopping_app/models/product.dart';
 import 'package:beverly_hills_shopping_app/models/promotion.dart';
+import 'package:beverly_hills_shopping_app/models/report.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
@@ -395,4 +397,506 @@ class DBHelper {
     print(outletsList);
     return outletsList;
   }
+
+  Future<void> addOrder(Order _order) async {
+    final orderRef = FirebaseFirestore.instance.collection('orders').doc();
+
+    await orderRef
+        .set({
+          "productTitle": _order.productTitle,
+          "productPrice": _order.productPrice,
+          "productPicUrl": _order.productPicUrl,
+          "orderID": orderRef.id,
+          "productID": _order.productID,
+          "quantity": _order.quantity,
+          "purchaseTime": _order.purchaseTime,
+          "purchasedBy": _order.purchasedBy,
+          "soldBy": _order.soldBy,
+        })
+        .then((value) => print("Order Details Updated: "))
+        .catchError((error) => print("Failed to Order details: $error"));
+  }
+
+  Future<void> completeOrder(String _orderID) {
+    return orderCollectionReference
+        .doc(_orderID)
+        .delete()
+        .then((value) => print("Order Removed"))
+        .catchError((error) => print("Failed to delete Order: $error"));
+  }
+
+  Future<void> sendStatistics(String currentDay, String currentHour,
+      {String type, String id, bool shouldUpdate}) async {
+    /// Gets the current weeks start and end dates
+    List dates = common.getWeek();
+
+    /// Converts the current hour into an int
+    var currentHourInInt = int.parse(currentHour);
+    assert(currentHourInInt is int);
+
+    /// Converts the current day string to loverCase
+    String currentDayInLowerCase = currentDay.toLowerCase();
+    print(currentDayInLowerCase);
+
+    await reportCollectionReference
+        .doc(dates[0] + "-" + dates[1])
+        .get()
+        .then((doc) async {
+      if (doc.exists) {
+        if (shouldUpdate) {
+          /// Updates count depending on time and date
+          if (currentHourInInt >= 9 && currentHourInInt < 12) {
+            switch (currentDayInLowerCase) {
+              case "monday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "monday": FieldValue.increment(1),
+                  });
+                }
+                break;
+
+              case "tuesday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "tuesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "wednesday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "wednesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "thursday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "thursday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "friday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "friday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "saturday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "saturday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "sunday":
+                {
+                  updateStatistics({
+                    "time9_12": FieldValue.increment(1),
+                    "sunday": FieldValue.increment(1),
+                  });
+                }
+                break;
+            }
+          } else if (currentHourInInt >= 12 && currentHourInInt < 15) {
+            switch (currentDayInLowerCase) {
+              case "monday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "monday": FieldValue.increment(1),
+                  });
+                }
+                break;
+
+              case "tuesday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "tuesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "wednesday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "wednesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "thursday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "thursday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "friday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "friday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "saturday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "saturday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "sunday":
+                {
+                  updateStatistics({
+                    "time12_15": FieldValue.increment(1),
+                    "sunday": FieldValue.increment(1),
+                  });
+                }
+                break;
+            }
+          } else if (currentHourInInt >= 15 && currentHourInInt < 18) {
+            switch (currentDayInLowerCase) {
+              case "monday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "monday": FieldValue.increment(1),
+                  });
+                }
+                break;
+
+              case "tuesday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "tuesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "wednesday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "wednesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "thursday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "thursday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "friday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "friday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "saturday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "saturday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "sunday":
+                {
+                  updateStatistics({
+                    "time15_18": FieldValue.increment(1),
+                    "sunday": FieldValue.increment(1),
+                  });
+                }
+                break;
+            }
+          } else if (currentHourInInt >= 18 && currentHourInInt < 21) {
+            switch (currentDayInLowerCase) {
+              case "monday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "monday": FieldValue.increment(1),
+                  });
+                }
+                break;
+
+              case "tuesday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "tuesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "wednesday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "wednesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "thursday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "thursday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "friday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "friday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "saturday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "saturday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "sunday":
+                {
+                  updateStatistics({
+                    "time18_21": FieldValue.increment(1),
+                    "sunday": FieldValue.increment(1),
+                  });
+                }
+                break;
+            }
+          } else if (currentHourInInt >= 21 && currentHourInInt < 00) {
+            switch (currentDayInLowerCase) {
+              case "monday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "monday": FieldValue.increment(1),
+                  });
+                }
+                break;
+
+              case "tuesday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "tuesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "wednesday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "wednesday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "thursday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "thursday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "friday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "friday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "saturday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "saturday": FieldValue.increment(1),
+                  });
+                }
+                break;
+              case "sunday":
+                {
+                  updateStatistics({
+                    "time21_24": FieldValue.increment(1),
+                    "sunday": FieldValue.increment(1),
+                  });
+                }
+                break;
+            }
+          }
+        }
+
+        /// Collects product/category/order/outlet click count
+        if (type == "product") {
+          updateStatistics({
+            "products.$id": FieldValue.increment(1),
+          });
+        } else if (type == "outlet") {
+          updateStatistics({
+            "outlets.$id": FieldValue.increment(1),
+          });
+        } else if (type == "order") {
+          updateStatistics({
+            "orders.$id": FieldValue.increment(1),
+          });
+        } else if (type == "category") {
+          updateStatistics({
+            "categories.$id": FieldValue.increment(1),
+          });
+        } else {
+          print("No Value");
+        }
+      } else {
+        await reportCollectionReference
+            .doc(dates[0] + "_" + dates[1])
+            .set({
+              "weekStartDate": dates[0],
+              "weekEndDate": dates[1],
+              "monday": 0,
+              "tuesday": 0,
+              "wednesday": 0,
+              "thursday": 0,
+              "friday": 0,
+              "saturday": 0,
+              "sunday": 0,
+              "time9_12": 0,
+              "time12_15": 0,
+              "time15_18": 0,
+              "time18_21": 0,
+              "time21_24": 0,
+              "products": {},
+              "orders": {},
+              "categories": {},
+              "outlets": {},
+            })
+            .then((value) => print("Report Details Updated: "))
+            .catchError((error) => print("Failed to Report details: $error"));
+      }
+    });
+  }
+
+  Future updateStatistics(Map<String, Object> map) async {
+    List dates = common.getWeek();
+
+    await reportCollectionReference
+        .doc(dates[0] + "-" + dates[1])
+        .update(map)
+        .then((value) => print("Report Details Updated: "))
+        .catchError((error) => print("Failed to Report details: $error"));
+  }
+
+  Future<Report> getReportData(String dateRage) async {
+    Report _report = Report();
+    await reportCollectionReference
+        .where(FieldPath.documentId, isEqualTo: dateRage)
+        .get()
+        .then((event) {
+      if (event.docs.isNotEmpty) {
+        Map<String, dynamic> documentData = event.docs.single.data();
+
+        _report.monday = documentData['monday'].toString();
+        _report.tuesday = documentData['tuesday'].toString();
+        _report.wednesday = documentData['wednesday'].toString();
+        _report.thursday = documentData['thursday'].toString();
+        _report.friday = documentData['friday'].toString();
+        _report.saturday = documentData['saturday'].toString();
+        _report.sunday = documentData['sunday'].toString();
+        _report.time9_12 = documentData['time9_12'].toString();
+        _report.time12_15 = documentData['time12_15'].toString();
+        _report.time15_18 = documentData['time15_18'].toString();
+        _report.time18_21 = documentData['time18_21'].toString();
+        _report.time21_24 = documentData['time21_24'].toString();
+        _report.outlets = documentData['outlets'];
+        _report.categories = documentData['categories'];
+        _report.orders = documentData['orders'];
+        _report.products = documentData['products'];
+      }
+    }).catchError((e) => print("error fetching data: $e"));
+
+    return _report;
+  }
+
+  Future<List> getDateRangeList() async {
+    List _dateRangeList = [];
+    await reportCollectionReference.get().then((snapshot) {
+      snapshot.docs.forEach((doc) {
+        _dateRangeList.add(doc.id.toString());
+      });
+    });
+    return _dateRangeList;
+  }
+
+  Future<Product> getProductData(String productID) async {
+    Product _product = Product();
+    await productCollectionReference
+        .where(FieldPath.documentId, isEqualTo: productID)
+        .get()
+        .then((event) {
+      if (event.docs.isNotEmpty) {
+        Map<String, dynamic> documentData = event.docs.single.data();
+
+        _product.productTitle = documentData['productTitle'].toString();
+        _product.productID = documentData['productID'].toString();
+        _product.productPicUrl = documentData['productPicUrl'].toString();
+      }
+    }).catchError((e) => print("error fetching data: $e"));
+
+    return _product;
+  }
+
+  Future<Outlet> getOutletData(String outletID) async {
+    Outlet _outlet = Outlet();
+    await outletCollectionReference
+        .where(FieldPath.documentId, isEqualTo: outletID)
+        .get()
+        .then((event) {
+      if (event.docs.isNotEmpty) {
+        Map<String, dynamic> documentData = event.docs.single.data();
+
+        _outlet.outletName = documentData['outletName'].toString();
+        _outlet.outletID = documentData['userID'].toString();
+        _outlet.profilePicUrl = documentData['profilePicUrl'].toString();
+      }
+    }).catchError((e) => print("error fetching data: $e"));
+
+    return _outlet;
+  }
+
+  // Future<Outlet> getCategoryData(String outletID) async {
+  //   String _category = "";
+  //   await outletCollectionReference
+  //       .where(FieldPath.documentId, isEqualTo: outletID)
+  //       .get()
+  //       .then((event) {
+  //     if (event.docs.isNotEmpty) {
+  //       Map<String, dynamic> documentData = event.docs.single.data();
+  //
+  //       _category = documentData['userID'].toString();
+  //     }
+  //   }).catchError((e) => print("error fetching data: $e"));
+  //
+  //   return _outlet;
+  // }
 }

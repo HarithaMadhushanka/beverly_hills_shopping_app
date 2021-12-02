@@ -1,11 +1,14 @@
 import 'package:beverly_hills_shopping_app/components/custom_drawer.dart';
 import 'package:beverly_hills_shopping_app/components/custom_home_container.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart';
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_add_products_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_add_promotions_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_profile_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_view_feedbacks_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_view_orders.dart';
+import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
+    as common;
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,6 +23,14 @@ class OutletHomeScreen extends StatefulWidget {
 class _OutletHomeScreenState extends State<OutletHomeScreen> {
   final GlobalKey<ScaffoldState> _outletHomeScaffoldKey =
       new GlobalKey<ScaffoldState>();
+  DBHelper _dbHelper = DBHelper();
+
+  @override
+  void initState() {
+    _dbHelper.sendStatistics(common.getDay(), common.getCurrentHourIn24(),
+        shouldUpdate: false);
+    super.initState();
+  }
 
   @override
   void dispose() {

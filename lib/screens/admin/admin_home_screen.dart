@@ -5,6 +5,7 @@ import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_add_routes_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_pending_promotions_screen.dart';
+import 'package:beverly_hills_shopping_app/screens/admin/admin_reports_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/admin/admin_view_outlets_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_profile_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/welcome/welcome.dart';
@@ -23,6 +24,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final GlobalKey<ScaffoldState> _adminHomeScaffoldKey =
       new GlobalKey<ScaffoldState>();
   DBHelper _dbHelper = DBHelper();
+  List _dateRangeList = [];
 
   List<Color> colors = [
     Colors.red.withOpacity(0.2),
@@ -30,6 +32,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     Colors.green.withOpacity(0.2),
     Colors.orange.withOpacity(0.2),
   ];
+
+  @override
+  void initState() {
+    _getDateRangeList();
+
+    super.initState();
+  }
+
+  Future<void> _getDateRangeList() async {
+    _dateRangeList = await _dbHelper.getDateRangeList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +156,28 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   iconBgColor: Colors.white.withOpacity(0.8),
                                   icon: FaIcon(
                                     FontAwesomeIcons.locationArrow,
+                                    size: 22,
+                                    color: PrimaryColorDark,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CustomHomeContainer(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AdminReportsScreen(
+                                        dateRangeList: _dateRangeList,
+                                      ),
+                                    ),
+                                  ),
+                                  isLeft: false,
+                                  title: "Reports",
+                                  color: colors[1],
+                                  iconBgColor: Colors.white.withOpacity(0.8),
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.wpforms,
                                     size: 22,
                                     color: PrimaryColorDark,
                                   ),

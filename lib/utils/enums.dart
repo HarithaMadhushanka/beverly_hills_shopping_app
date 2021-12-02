@@ -36,6 +36,12 @@ CollectionReference feedbacksCollectionReference =
     FirebaseFirestore.instance.collection('feedbacks');
 CollectionReference productCollectionReference =
     FirebaseFirestore.instance.collection('products');
+CollectionReference orderCollectionReference =
+    FirebaseFirestore.instance.collection('orders');
+CollectionReference categoryCollectionReference =
+    FirebaseFirestore.instance.collection('category');
+CollectionReference reportCollectionReference =
+    FirebaseFirestore.instance.collection('reports');
 
 List<String> outletCategories = [
   'Shoes',

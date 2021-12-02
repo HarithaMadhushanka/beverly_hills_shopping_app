@@ -1,4 +1,5 @@
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_common.dart';
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_outlets_details_screen.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
@@ -20,8 +21,9 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
   int _selectedCategoryIndex = 0;
   String _selectedCategory = "";
   String _searchItem = "";
-  TextEditingController _categoryTextEditingController =
+  TextEditingController _searchOutletTextEditingController =
       TextEditingController();
+  DBHelper _dbHelper = DBHelper();
 
   @override
   void initState() {
@@ -140,7 +142,7 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                               border: Border.all(color: Colors.black),
                             ),
                             child: TextFormField(
-                              controller: _categoryTextEditingController,
+                              controller: _searchOutletTextEditingController,
                               textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(top: 15),
@@ -173,16 +175,16 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                     ),
                                   ),
                                   suffixIcon: Visibility(
-                                    visible:
-                                        _categoryTextEditingController.text !=
-                                                ""
-                                            ? true
-                                            : false,
+                                    visible: _searchOutletTextEditingController
+                                                .text !=
+                                            ""
+                                        ? true
+                                        : false,
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          _categoryTextEditingController.text =
-                                              "";
+                                          _searchOutletTextEditingController
+                                              .text = "";
                                         });
                                       },
                                       child: Padding(
@@ -208,18 +210,18 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                           ),
                           StreamBuilder<QuerySnapshot>(
                               stream: _selectedCategoryIndex == 0 &&
-                                      _categoryTextEditingController
+                                      _searchOutletTextEditingController
                                           .text.isEmpty
                                   ? outletCollectionReference.snapshots()
                                   : _selectedCategoryIndex != 0 &&
-                                          _categoryTextEditingController
+                                          _searchOutletTextEditingController
                                               .text.isEmpty
                                       ? outletCollectionReference
                                           .where('category',
                                               isEqualTo: _selectedCategory)
                                           .snapshots()
                                       : _selectedCategoryIndex == 0 &&
-                                              _categoryTextEditingController
+                                              _searchOutletTextEditingController
                                                   .text.isNotEmpty
                                           ? outletCollectionReference
                                               .where('outletName',
@@ -252,6 +254,20 @@ class _CustomerViewOutletsScreenState extends State<CustomerViewOutletsScreen> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
+                                              if (_searchOutletTextEditingController.text !=
+                                                      "" &&
+                                                  _searchOutletTextEditingController
+                                                          .text !=
+                                                      null &&
+                                                  snapshot.data.docs.length !=
+                                                      null) {}
+
+                                              _dbHelper.sendStatistics(
+                                                  common.getDay(),
+                                                  common.getCurrentHourIn24(),
+                                                  type: 'outlet',
+                                                  id: outlet["userID"],
+                                                  shouldUpdate: false);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.beverly_hills_shopping_app">
    <application
-        android:label="beverly_hills_shopping_app"
+        android:label="Beverly Hills Shopping App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

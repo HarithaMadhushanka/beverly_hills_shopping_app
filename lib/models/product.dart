@@ -1,5 +1,6 @@
 class Product {
   String productTitle;
+  String productID;
   String productPrice;
   String addedBy;
   String productCategory;
@@ -11,6 +12,7 @@ class Product {
 
   Product.fromJson(Map<String, dynamic> json)
       : productTitle = json['productTitle'],
+        productID = json['productID'],
         productPrice = json['productPrice'],
         addedBy = json['addedBy'],
         productCategory = json['productCategory'],
@@ -20,6 +22,7 @@ class Product {
 
   Map<String, dynamic> toJson() => {
         'productTitle': productTitle,
+        'productID': productID,
         'productPrice': productPrice,
         'addedBy': addedBy,
         'productCategory': productCategory,

@@ -1,4 +1,5 @@
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar_common.dart';
+import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/screens/customer/customer_view_product_details.dart';
 import 'package:beverly_hills_shopping_app/utils/common_functions.dart'
     as common;
@@ -21,8 +22,17 @@ class _CustomerViewProductsScreenState
   int _selectedCategoryIndex = 0;
   String _selectedCategory = "";
   String _searchItem = "";
-  TextEditingController _categoryTextEditingController =
+  TextEditingController _searchProductTextEditingController =
       TextEditingController();
+  DBHelper _dbHelper = DBHelper();
+
+  @override
+  void initState() {
+    if (outletCategories[0] != "All") {
+      outletCategories.insert(0, "All");
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +80,22 @@ class _CustomerViewProductsScreenState
                                       return Row(
                                         children: [
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
+                                              String _categoryID = "";
                                               setState(() {
                                                 _selectedCategoryIndex = index;
                                                 _selectedCategory =
                                                     outletCategories[index];
                                               });
+
+                                              if (_selectedCategory != "All") {
+                                                _dbHelper.sendStatistics(
+                                                    common.getDay(),
+                                                    common.getCurrentHourIn24(),
+                                                    type: 'category',
+                                                    id: _selectedCategory,
+                                                    shouldUpdate: false);
+                                              }
                                             },
                                             child: Container(
                                               padding: EdgeInsets.fromLTRB(
@@ -133,7 +153,7 @@ class _CustomerViewProductsScreenState
                               border: Border.all(color: Colors.black),
                             ),
                             child: TextFormField(
-                              controller: _categoryTextEditingController,
+                              controller: _searchProductTextEditingController,
                               textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(top: 15),
@@ -166,16 +186,16 @@ class _CustomerViewProductsScreenState
                                     ),
                                   ),
                                   suffixIcon: Visibility(
-                                    visible:
-                                        _categoryTextEditingController.text !=
-                                                ""
-                                            ? true
-                                            : false,
+                                    visible: _searchProductTextEditingController
+                                                .text !=
+                                            ""
+                                        ? true
+                                        : false,
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          _categoryTextEditingController.text =
-                                              "";
+                                          _searchProductTextEditingController
+                                              .text = "";
                                         });
                                       },
                                       child: Padding(
@@ -201,18 +221,18 @@ class _CustomerViewProductsScreenState
                           ),
                           StreamBuilder<QuerySnapshot>(
                               stream: _selectedCategoryIndex == 0 &&
-                                      _categoryTextEditingController
+                                      _searchProductTextEditingController
                                           .text.isEmpty
                                   ? productCollectionReference.snapshots()
                                   : _selectedCategoryIndex != 0 &&
-                                          _categoryTextEditingController
+                                          _searchProductTextEditingController
                                               .text.isEmpty
                                       ? productCollectionReference
                                           .where('productCategory',
                                               isEqualTo: _selectedCategory)
                                           .snapshots()
                                       : _selectedCategoryIndex == 0 &&
-                                              _categoryTextEditingController
+                                              _searchProductTextEditingController
                                                   .text.isNotEmpty
                                           ? productCollectionReference
                                               .where('productTitle',
@@ -245,6 +265,20 @@ class _CustomerViewProductsScreenState
                                         children: [
                                           GestureDetector(
                                             onTap: () {
+                                              if (_searchProductTextEditingController.text !=
+                                                      "" &&
+                                                  _searchProductTextEditingController
+                                                          .text !=
+                                                      null &&
+                                                  snapshot.data.docs.length !=
+                                                      null) {}
+
+                                              _dbHelper.sendStatistics(
+                                                  common.getDay(),
+                                                  common.getCurrentHourIn24(),
+                                                  type: 'product',
+                                                  id: product["productID"],
+                                                  shouldUpdate: false);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

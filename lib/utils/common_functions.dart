@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
 import 'package:beverly_hills_shopping_app/models/customer.dart';
 import 'package:beverly_hills_shopping_app/models/outlet.dart';
+import 'package:beverly_hills_shopping_app/models/report.dart';
 import 'package:beverly_hills_shopping_app/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void showToast(BuildContext context, String msg, {Duration duration}) {
@@ -165,3 +167,80 @@ String truncateWithEllipsis(int cutoff, String myString) {
 }
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+
+List<String> getWeek() {
+  final date = DateTime.now();
+
+  print('Date: $date');
+  final weekDay = date.weekday == 7 ? 0 : date.weekday;
+
+  return [
+    getDate(
+      date.subtract(
+        Duration(days: weekDay - 1),
+      ),
+    ).toString().split(' ')[0],
+    getDate(date.add(Duration(days: DateTime.daysPerWeek - weekDay)))
+        .toString()
+        .split(' ')[0]
+  ];
+}
+
+DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
+
+String getDay() {
+  DateTime date = DateTime.now();
+  String day = DateFormat('EEEE').format(date);
+
+  return day;
+}
+
+String getCurrentHourIn24() {
+  final now = new DateTime.now();
+  String formatter = DateFormat('H').format(now);
+  print(formatter.toString());
+
+  return formatter.toString();
+}
+
+Future<List> getHighestCountItem(Report report, {String type}) async {
+  int theValue = 0;
+  String theKey = "";
+
+  if (type == "product") {
+    report.products.forEach((k, v) {
+      if (v > theValue) {
+        theValue = v;
+        theKey = k;
+      }
+    });
+  }
+  if (type == "order") {
+    report.orders.forEach((k, v) {
+      if (v > theValue) {
+        theValue = v;
+        theKey = k;
+      }
+    });
+  }
+  if (type == "outlet") {
+    report.outlets.forEach((k, v) {
+      if (v > theValue) {
+        theValue = v;
+        theKey = k;
+      }
+    });
+  }
+  if (type == "category") {
+    report.categories.forEach((k, v) {
+      if (v > theValue) {
+        theValue = v;
+        theKey = k;
+      }
+    });
+  }
+
+  // print(theKey);
+
+  return [theKey, theValue];
+}

@@ -45,9 +45,9 @@ class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
 
   @override
   void didChangeDependencies() {
-    if (_navigationStartList[0] != "Start")
-      _navigationStartList.insert(0, "Start");
-    if (_navigationEndList[0] != "End") _navigationEndList.insert(0, "End");
+    if (_navigationStartList[0] != "Entrance")
+      _navigationStartList.insert(0, "Entrance");
+    if (_navigationEndList[0] != "Exit") _navigationEndList.insert(0, "Exit");
     super.didChangeDependencies();
   }
 
@@ -127,16 +127,16 @@ class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
                                   isEditable2 = true;
                                 });
 
-                                if (_selectedStartingPoint == "Start") {
+                                if (_selectedStartingPoint == "Entrance") {
                                   common.getOutletData();
                                   setState(() {
                                     _navigationEndList = navigationEndList;
-                                    _navigationEndList.remove("End");
+                                    _navigationEndList.remove("Exit");
                                   });
                                 } else {
                                   setState(() {
                                     _navigationEndList.clear();
-                                    _navigationEndList.insert(0, "End");
+                                    _navigationEndList.insert(0, "Exit");
                                   });
                                 }
 
@@ -239,10 +239,10 @@ class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
                               _selectedEndingPoint = null;
                               _navigationStartList = navigationStartList;
                               _navigationEndList = navigationEndList;
-                              if (_navigationStartList[0] != "Start")
-                                _navigationStartList.insert(0, "Start");
-                              if (_navigationEndList[0] != "End")
-                                _navigationEndList.insert(0, "End");
+                              if (_navigationStartList[0] != "Entrance")
+                                _navigationStartList.insert(0, "Entrance");
+                              if (_navigationEndList[0] != "Exit")
+                                _navigationEndList.insert(0, "Exit");
                               isEditable1 = true;
                               isEditable2 = false;
                               isImageVisible = false;
@@ -262,6 +262,9 @@ class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
                           text: "Generate Route",
                           buttonTextSize: 14,
                           onTap: () {
+                            _dbHelper.sendStatistics(
+                                common.getDay(), common.getCurrentHourIn24(),
+                                shouldUpdate: true);
                             _generateRoute();
                           },
                         ),
@@ -292,7 +295,7 @@ class _CustomerNavigationScreenState extends State<CustomerNavigationScreen> {
   }
 
   void _generateRoute() async {
-    if (_selectedStartingPoint == "Start") {
+    if (_selectedStartingPoint == "Entrance") {
       _outletID =
           await _dbHelper.getOutletID(_selectedEndingPoint, isCommon: true);
       setState(() {

@@ -61,6 +61,19 @@ class _IntroScreenState extends State<IntroScreen> {
 
   String _selectedCategory;
 
+  List<String> _outletsList = [];
+
+  @override
+  void initState() {
+    if (outletCategories.contains("All")) {
+      outletCategories.removeAt(0);
+      _outletsList = outletCategories;
+    } else {
+      _outletsList = outletCategories;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -324,9 +337,9 @@ class _IntroScreenState extends State<IntroScreen> {
                                   _selectedCategory = newValue;
                                 });
                               },
-                              items: outletCategories.map((category) {
+                              items: _outletsList.map((category) {
                                 return DropdownMenuItem(
-                                  child: new Text(category),
+                                  child: Text(category),
                                   value: category,
                                 );
                               }).toList(),

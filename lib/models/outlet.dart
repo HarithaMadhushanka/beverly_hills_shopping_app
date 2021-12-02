@@ -1,6 +1,7 @@
 class Outlet {
   String profilePicUrl;
   String outletName;
+  String outletID;
   String email;
   String mobileNo;
   String category;
@@ -14,6 +15,7 @@ class Outlet {
   Outlet.fromJson(Map<String, dynamic> json)
       : profilePicUrl = json['profilePicUrl'],
         outletName = json['outletName'],
+        outletID = json['outletID'],
         email = json['email'],
         mobileNo = json['mobileNo'],
         category = json['category'],
@@ -25,6 +27,7 @@ class Outlet {
   Map<String, dynamic> toJson() => {
         'profilePicUrl': profilePicUrl,
         'outletName': outletName,
+        'outletID': outletID,
         'email': email,
         'mobileNo': mobileNo,
         'category': category,
