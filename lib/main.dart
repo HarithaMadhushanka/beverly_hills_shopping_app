@@ -32,11 +32,12 @@ class MyApp extends StatelessWidget {
           ? CustomerDashboard()
           : isOutletLoggedIn
               ? OutletHomeScreen()
-              : WelcomeScreen(),
+              : WelcomeScreen(), // Navigates to the Dashboard if the user is already logged in
     );
   }
 }
 
+/// Checks if the user is already logged in
 Future<void> checkAuthState() async {
   FirebaseAuth.instance.authStateChanges().listen(
     (User user) {
@@ -46,9 +47,10 @@ Future<void> checkAuthState() async {
         isCustomerLoggedIn = false;
         runApp(MyApp());
       } else if (user != null && user.isAnonymous == false) {
-        // _dbHelper.DBHelper().commonUserSignOut();
+        /// Assigns the logged in user's user id
         loggedInUserID = user.uid;
 
+        /// Checks customer Auth state
         customerCollectionReference.get().then((QuerySnapshot querySnapshot) {
           querySnapshot.docs.forEach((doc) {
             if (loggedInUserID == (doc.data() as dynamic)['userID']) {
@@ -59,6 +61,7 @@ Future<void> checkAuthState() async {
           });
         });
 
+        /// Checks outlet Auth state
         outletCollectionReference.get().then((QuerySnapshot querySnapshot) {
           querySnapshot.docs.forEach((doc) {
             if (loggedInUserID == (doc.data() as dynamic)['userID']) {

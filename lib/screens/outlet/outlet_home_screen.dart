@@ -2,6 +2,7 @@ import 'package:beverly_hills_shopping_app/components/custom_drawer.dart';
 import 'package:beverly_hills_shopping_app/components/custom_home_container.dart';
 import 'package:beverly_hills_shopping_app/components/custom_sliver_app_bar.dart';
 import 'package:beverly_hills_shopping_app/database/db_helper.dart';
+import 'package:beverly_hills_shopping_app/screens/admin/admin_reports_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_add_products_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_add_promotions_screen.dart';
 import 'package:beverly_hills_shopping_app/screens/outlet/outlet_profile_screen.dart';
@@ -24,12 +25,18 @@ class _OutletHomeScreenState extends State<OutletHomeScreen> {
   final GlobalKey<ScaffoldState> _outletHomeScaffoldKey =
       new GlobalKey<ScaffoldState>();
   DBHelper _dbHelper = DBHelper();
+  List _dateRangeList = [];
 
   @override
   void initState() {
     _dbHelper.sendStatistics(common.getDay(), common.getCurrentHourIn24(),
         shouldUpdate: false);
+    _getDateRangeList();
     super.initState();
+  }
+
+  Future<void> _getDateRangeList() async {
+    _dateRangeList = await _dbHelper.getDateRangeList();
   }
 
   @override
@@ -199,6 +206,28 @@ class _OutletHomeScreenState extends State<OutletHomeScreen> {
                                   icon: FaIcon(
                                     FontAwesomeIcons.star,
                                     size: 20,
+                                    color: PrimaryColorDark,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CustomHomeContainer(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AdminReportsScreen(
+                                        dateRangeList: _dateRangeList,
+                                      ),
+                                    ),
+                                  ),
+                                  isLeft: true,
+                                  title: "Reports",
+                                  color: colors[0],
+                                  iconBgColor: Colors.white.withOpacity(0.8),
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.wpforms,
+                                    size: 22,
                                     color: PrimaryColorDark,
                                   ),
                                 ),

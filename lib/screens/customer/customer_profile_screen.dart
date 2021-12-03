@@ -36,15 +36,16 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   @override
   void initState() {
     super.initState();
-    common.saveUpdatedUserDetailsLocally(userType: "customer").whenComplete(
-        () => common.getUserDetails(isCustomer: true).then((value) {
-              _customerFirstNameController.text = value.firstName;
-              _customerLastNameController.text = value.lastName;
-              _customerMobileNoController.text = value.mobileNo;
-              _customerAddress1Controller.text = value.addressLine1;
-              _customerAddress2Controller.text = value.addressLine2;
-              _customerAddress3Controller.text = value.addressLine3;
-            }));
+    common
+        .saveUpdatedUserDetailsLocally(userType: "customer")
+        .then((value) async {
+      _customerFirstNameController.text = await value.firstName;
+      _customerLastNameController.text = await value.lastName;
+      _customerMobileNoController.text = await value.mobileNo;
+      _customerAddress1Controller.text = await value.addressLine1;
+      _customerAddress2Controller.text = await value.addressLine2;
+      _customerAddress3Controller.text = await value.addressLine3;
+    });
   }
 
   @override

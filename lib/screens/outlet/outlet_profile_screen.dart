@@ -39,16 +39,17 @@ class _OutletProfileScreenState extends State<OutletProfileScreen> {
   @override
   void initState() {
     super.initState();
-    common.saveUpdatedUserDetailsLocally(userType: "outlet").whenComplete(
-        () => common.getUserDetails(isCustomer: false).then((value) {
-              _selectedCategory = value.category;
-              _outletNameController.text = value.outletName;
-              _outletMobileNoController.text = value.mobileNo;
-              _outletAddress1Controller.text = value.addressLine1;
-              _outletAddress2Controller.text = value.addressLine2;
-              _outletAddress3Controller.text = value.addressLine3;
-              _outletDescController.text = value.outletDesc;
-            }));
+    common
+        .saveUpdatedUserDetailsLocally(userType: "outlet")
+        .then((value) async {
+      _selectedCategory = value.category;
+      _outletNameController.text = value.outletName;
+      _outletMobileNoController.text = value.mobileNo;
+      _outletAddress1Controller.text = value.addressLine1;
+      _outletAddress2Controller.text = value.addressLine2;
+      _outletAddress3Controller.text = value.addressLine3;
+      _outletDescController.text = value.outletDesc;
+    });
   }
 
   @override

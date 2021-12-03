@@ -26,14 +26,17 @@ void showToast(BuildContext context, String msg, {Duration duration}) {
   );
 }
 
-Future<void> saveUpdatedUserDetailsLocally({@required String userType}) async {
+Future<dynamic> saveUpdatedUserDetailsLocally(
+    {@required String userType}) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   Customer customerObj = Customer();
   Outlet outletObj = Outlet();
 
-  await userType == "customer"
-      ? customerCollectionReference.get().then((QuerySnapshot querySnapshot) {
-          querySnapshot.docs.forEach((doc) {
+  userType == "customer"
+      ? await customerCollectionReference
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+          querySnapshot.docs.forEach((doc) async {
             if (loggedInUserID == (doc.data() as dynamic)["userID"]) {
               customerObj.profilePicUrl = doc["profilePicUrl"];
               customerObj.firstName = doc["firstName"];
@@ -44,13 +47,15 @@ Future<void> saveUpdatedUserDetailsLocally({@required String userType}) async {
               customerObj.addressLine2 = doc["addressLine2"];
               customerObj.addressLine3 = doc["addressLine3"];
 
-              sharedPreferences.setString(
+              await sharedPreferences.setString(
                   'customerObj', jsonEncode(customerObj));
             }
           });
         })
-      : outletCollectionReference.get().then((QuerySnapshot querySnapshot) {
-          querySnapshot.docs.forEach((doc) {
+      : await outletCollectionReference
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+          querySnapshot.docs.forEach((doc) async {
             if (loggedInUserID == (doc.data() as dynamic)['userID']) {
               outletObj.profilePicUrl = doc["profilePicUrl"];
               outletObj.outletName = doc["outletName"];
@@ -63,22 +68,27 @@ Future<void> saveUpdatedUserDetailsLocally({@required String userType}) async {
               outletObj.addressLine2 = doc["addressLine2"];
               outletObj.addressLine3 = doc["addressLine3"];
 
-              sharedPreferences.setString('outletObj', jsonEncode(outletObj));
+              await sharedPreferences.setString(
+                  'outletObj', jsonEncode(outletObj));
             }
           });
         });
+
+  return userType == "customer" ? customerObj : outletObj;
 }
 
 Future<dynamic> getUserDetails({@required bool isCustomer}) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   String customerObj = sharedPreferences.get('customerObj');
   String outletObj = sharedPreferences.get('outletObj');
-
   Customer customer = Customer();
-  customer = Customer.fromJson(jsonDecode(customerObj));
-
   Outlet outlet = Outlet();
-  outlet = Outlet.fromJson(jsonDecode(outletObj));
+
+  if (isCustomer) {
+    customer = Customer.fromJson(jsonDecode(customerObj));
+  } else if (!isCustomer) {
+    outlet = Outlet.fromJson(jsonDecode(outletObj));
+  }
 
   return isCustomer ? customer : outlet;
 }

@@ -20,38 +20,6 @@ import 'package:flutter/material.dart';
 class DBHelper {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  StreamSubscription<User> checkAuthState() {
-    return FirebaseAuth.instance.authStateChanges().listen(
-      (User user) {
-        if (user == null) {
-          loggedInUserID = "";
-          print('User is currently signed out!');
-          isCustomerLoggedIn = false;
-        } else {
-          loggedInUserID = user.uid;
-
-          customerCollectionReference.get().then((QuerySnapshot querySnapshot) {
-            querySnapshot.docs.forEach((doc) {
-              if (loggedInUserID == doc["userID"]) {
-                isCustomerLoggedIn = true;
-                print('Customer is signed in!');
-              }
-            });
-          });
-
-          outletCollectionReference.get().then((QuerySnapshot querySnapshot) {
-            querySnapshot.docs.forEach((doc) {
-              if (loggedInUserID == doc["userID"]) {
-                isOutletLoggedIn = true;
-                print('Outlet is signed in!');
-              }
-            });
-          });
-        }
-      },
-    );
-  }
-
   /// Registers the User (Firebase Auth)
   Future<UserCredential> registerUser(
       String email, String password, BuildContext context) async {
@@ -66,23 +34,6 @@ class DBHelper {
       common.showToast(context, error.message.toString());
     });
     return userCredential;
-  }
-
-  /// Saves User's entry details in Firestore
-  Future saveUserInfoToFireStore(
-      User firebaseUser, String collectionName) async {
-    collectionName == "customers"
-        ? customerCollectionReference.doc(firebaseUser.uid).set({
-            "userID": firebaseUser.uid,
-            "email": firebaseUser.email,
-            "isRegCompleted": false,
-          })
-        : outletCollectionReference.doc(firebaseUser.uid).set({
-            "userID": firebaseUser.uid,
-            "email": firebaseUser.email,
-            "isRegCompleted": false,
-            "isRouteAdded": false,
-          });
   }
 
   /// Logs in the User (Firebase Auth)
@@ -123,12 +74,36 @@ class DBHelper {
     return adminCredentials;
   }
 
+  /// Logs in the Admin
   Future<UserCredential> loginAdmin() async {
     UserCredential userCredential =
         await FirebaseAuth.instance.signInAnonymously();
 
     print("Admin Logged In");
     return userCredential;
+  }
+
+  /// Logs out the users
+  Future<void> commonUserSignOut() async {
+    await FirebaseAuth.instance.signOut();
+    print("User Signed Out!");
+  }
+
+  /// Saves User's entry details in Firestore
+  Future saveUserInfoToFireStore(
+      User firebaseUser, String collectionName) async {
+    collectionName == "customers"
+        ? customerCollectionReference.doc(firebaseUser.uid).set({
+            "userID": firebaseUser.uid,
+            "email": firebaseUser.email,
+            "isRegCompleted": false,
+          })
+        : outletCollectionReference.doc(firebaseUser.uid).set({
+            "userID": firebaseUser.uid,
+            "email": firebaseUser.email,
+            "isRegCompleted": false,
+            "isRouteAdded": false,
+          });
   }
 
   /// Uploads User's Profile pic (Firebase Storage)
@@ -215,7 +190,7 @@ class DBHelper {
     return isRegCompleted;
   }
 
-  /// Uploads Pictures (Firebase Storage) - COMMON
+  /// Uploads Pictures (Firebase Storage) - COMMON DB Call
   Future<String> uploadPic(File _imageFile, String type,
       {String outletID, String imgName}) async {
     final promoRef = FirebaseFirestore.instance.collection('promotions').doc();
@@ -261,7 +236,7 @@ class DBHelper {
             : null;
   }
 
-  /// Updates Firestore collection with Pic URL - COMMON
+  /// Updates Firestore collection with Pic URL - COMMON DB Call
   Future updatePicUrl(String _docID, String _picUrl, String picType,
       {String imgName}) async {
     if (picType == "promotion") {
@@ -330,6 +305,7 @@ class DBHelper {
             (error) => print("Failed to update Product details: $error"));
   }
 
+  /// Approves the Promotion - Admin
   Future<void> approvePromotion(String _promoID) {
     return promotionsCollectionReference
         .doc(_promoID)
@@ -340,6 +316,7 @@ class DBHelper {
         .catchError((error) => print("Failed to accept promotion: $error"));
   }
 
+  /// Removes the Promotion - Admin
   Future<void> removePromotion(String _promoID) {
     return promotionsCollectionReference
         .doc(_promoID)
@@ -348,6 +325,7 @@ class DBHelper {
         .catchError((error) => print("Failed to delete promotion: $error"));
   }
 
+  /// Saves Feedback info - Customer
   Future<void> giveFeedBack(fdb.Feedback _feedback) async {
     await feedbacksCollectionReference
         .doc()
@@ -363,6 +341,7 @@ class DBHelper {
             (error) => print("Failed to update feedback details: $error"));
   }
 
+  /// Gets outlet Id when the outlet name is available
   Future<String> getOutletID(String outletName, {bool isCommon}) async {
     String selectedOutletID = "";
     await outletCollectionReference
@@ -379,11 +358,7 @@ class DBHelper {
     return selectedOutletID;
   }
 
-  Future<void> commonUserSignOut() async {
-    await FirebaseAuth.instance.signOut();
-    print("User Signed Out!");
-  }
-
+  /// Gets route added outlet names
   Future<List> getOutletsWithRoutes() async {
     List<String> outletsList = [];
     await outletCollectionReference
@@ -398,6 +373,7 @@ class DBHelper {
     return outletsList;
   }
 
+  /// Adds the order
   Future<void> addOrder(Order _order) async {
     final orderRef = FirebaseFirestore.instance.collection('orders').doc();
 
@@ -417,6 +393,7 @@ class DBHelper {
         .catchError((error) => print("Failed to Order details: $error"));
   }
 
+  /// Deleted the order
   Future<void> completeOrder(String _orderID) {
     return orderCollectionReference
         .doc(_orderID)
@@ -425,6 +402,7 @@ class DBHelper {
         .catchError((error) => print("Failed to delete Order: $error"));
   }
 
+  /// Send Report info to DB
   Future<void> sendStatistics(String currentDay, String currentHour,
       {String type, String id, bool shouldUpdate}) async {
     /// Gets the current weeks start and end dates
@@ -685,7 +663,7 @@ class DBHelper {
                 }
                 break;
             }
-          } else if (currentHourInInt >= 21 && currentHourInInt < 00) {
+          } else if (currentHourInInt >= 21 && currentHourInInt <= 00) {
             switch (currentDayInLowerCase) {
               case "monday":
                 {
@@ -769,8 +747,9 @@ class DBHelper {
           print("No Value");
         }
       } else {
+        /// Updates with dummy data if the data is not available
         await reportCollectionReference
-            .doc(dates[0] + "_" + dates[1])
+            .doc(dates[0] + "-" + dates[1])
             .set({
               "weekStartDate": dates[0],
               "weekEndDate": dates[1],
@@ -797,6 +776,7 @@ class DBHelper {
     });
   }
 
+  /// Updates report data in DB
   Future updateStatistics(Map<String, Object> map) async {
     List dates = common.getWeek();
 
@@ -807,6 +787,7 @@ class DBHelper {
         .catchError((error) => print("Failed to Report details: $error"));
   }
 
+  /// Gets report data
   Future<Report> getReportData(String dateRage) async {
     Report _report = Report();
     await reportCollectionReference
@@ -838,6 +819,7 @@ class DBHelper {
     return _report;
   }
 
+  /// Gets date range list in the report screen - Admin
   Future<List> getDateRangeList() async {
     List _dateRangeList = [];
     await reportCollectionReference.get().then((snapshot) {
@@ -848,6 +830,7 @@ class DBHelper {
     return _dateRangeList;
   }
 
+  /// Gets product data in the report screen - Admin
   Future<Product> getProductData(String productID) async {
     Product _product = Product();
     await productCollectionReference
@@ -866,6 +849,7 @@ class DBHelper {
     return _product;
   }
 
+  /// Gets outlet data in the report screen - Admin
   Future<Outlet> getOutletData(String outletID) async {
     Outlet _outlet = Outlet();
     await outletCollectionReference
@@ -883,20 +867,4 @@ class DBHelper {
 
     return _outlet;
   }
-
-  // Future<Outlet> getCategoryData(String outletID) async {
-  //   String _category = "";
-  //   await outletCollectionReference
-  //       .where(FieldPath.documentId, isEqualTo: outletID)
-  //       .get()
-  //       .then((event) {
-  //     if (event.docs.isNotEmpty) {
-  //       Map<String, dynamic> documentData = event.docs.single.data();
-  //
-  //       _category = documentData['userID'].toString();
-  //     }
-  //   }).catchError((e) => print("error fetching data: $e"));
-  //
-  //   return _outlet;
-  // }
 }

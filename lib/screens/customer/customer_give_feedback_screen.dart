@@ -33,6 +33,7 @@ class _CustomerGiveFeedbackScreenState
 
     common.getUserDetails(isCustomer: true).then((value) {
       customerName = value.firstName + " " + value.lastName;
+      print(customerName);
     });
   }
 
